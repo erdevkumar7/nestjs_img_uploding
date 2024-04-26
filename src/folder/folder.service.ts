@@ -2,15 +2,15 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFolderDto } from './dto/createfolder.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Folder, FolderDocument } from './schema/folder.schema';
-import { NewFolder } from './schema/newfolder.schema';
+import { Img, ImgDocument } from './schema/image.schema';
+import { NewFolder, NewFolderDocument } from './schema/newfolder.schema';
 
 @Injectable()
 export class FolderService {
   constructor(
-    @InjectModel(Folder.name) private folderModel: Model<FolderDocument>,
-    @InjectModel(NewFolder.name) private newfolderModel: Model<FolderDocument>,
-  ) {}
+    @InjectModel(Img.name) private ImgModel: Model<ImgDocument>,
+    @InjectModel(NewFolder.name) private newfolderModel: Model<NewFolderDocument>,
+  ) { }
 
   async createNewFolder(createFolderDto: CreateFolderDto) {
     const newFolder = await new this.newfolderModel(createFolderDto);
@@ -19,7 +19,8 @@ export class FolderService {
 
   //todo: Get All Folders
   async getAllFolders() {
-    const getAllFoldersData = await this.newfolderModel.find();
+    const getAllFoldersData = await this.newfolderModel.find().sort({ createdAt: -1 })
+      .exec();
     if (!getAllFoldersData) {
       throw new NotFoundException(`Folders are not found`);
     }
@@ -46,11 +47,11 @@ export class FolderService {
 
 
   async createNewFile(createFolderDto: CreateFolderDto) {
-    const newFolder = await new this.folderModel(createFolderDto);
+    const newImg = await new this.ImgModel(createFolderDto);
     if (!createFolderDto.order) {
       //   newFolder.order = await this.maxOrder();
     }
-    return newFolder.save();
+    return newImg.save();
   }
 
   getFolder() {
@@ -59,7 +60,7 @@ export class FolderService {
 
   //todo: getfolders images from Folder Collection
   async getFolderImg(folderId: string) {
-    const findImgByFolderId = await this.folderModel
+    const findImgByFolderId = await this.ImgModel
       .find({
         folderId: folderId,
       })

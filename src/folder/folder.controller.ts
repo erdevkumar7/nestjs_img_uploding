@@ -88,7 +88,31 @@ export class FolderControler {
     }
   }
 
-  
+  //todo: folder create
+  @Post('/create')
+  async createNewFolder(
+    @Request() req,
+    @Res() response: any,
+    @Body() createNewFolderDto: any,
+  ) {
+    try {
+      console.log(createNewFolderDto);
+      const folder =
+        await this.folderService.createNewFolder(createNewFolderDto);
+      return response.status(HttpStatus.CREATED).json({
+        message: 'folder has been created successfully',
+        folder,
+      });
+    } catch (err) {
+      console.log(err);
+      return response.status(HttpStatus.BAD_REQUEST).json({
+        statusCode: 400,
+        message: 'Error:folder not created!',
+        error: 'Bad Request',
+      });
+    }
+  }
+
 
   // @Get('/create')
   // @Render('pages/createfolder.hbs')
@@ -96,29 +120,6 @@ export class FolderControler {
   //   // const createNew = await this.folderService.createNewFolder();
   // }
 
-  // @Post('/create')
-  // async createNewFolder(
-  //   @Request() req,
-  //   @Res() response: any,
-  //   @Body() createNewFolderDto: CreateNewFolderDto,
-  // ) {
-  //   try {
-  //     console.log(createNewFolderDto);
-  //     const folder =
-  //       await this.folderService.createNewFolder(createNewFolderDto);
-  //     return response.status(HttpStatus.CREATED).json({
-  //       message: 'folder has been created successfully',
-  //       folder,
-  //     });
-  //   } catch (err) {
-  //     console.log(err);
-  //     return response.status(HttpStatus.BAD_REQUEST).json({
-  //       statusCode: 400,
-  //       message: 'Error:folder not created!',
-  //       error: 'Bad Request',
-  //     });
-  //   }
-  // }
 
   // @Get()
   // @Render('pages/index')

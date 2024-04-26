@@ -10,18 +10,15 @@ export class NewFolder {
   name: string;
 
   @Prop()
-  image: string;
+  cover_img: string;
 
   @Prop({ default: false })
   deleted: boolean;
+
+  @Prop({ default: Date.now }) // Default value to the current timestamp
+  createdAt: Date;
 }
 const NewFolderSchema = SchemaFactory.createForClass(NewFolder);
 
-NewFolderSchema.virtual('iconURL').get(function () {
-  const configService = new ConfigService();
-  return this.image
-    ? configService.get('MEDIA_URL') + '/uploads/icon/' + this.image
-    : null;
-});
 
 export { NewFolderSchema };

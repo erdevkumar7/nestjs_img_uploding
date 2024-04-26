@@ -116,6 +116,7 @@
     });
     function setCoverImage(imgIdForCover) {
       console.log(imgIdForCover, 'CoverImgID');
+      
       {{!-- $.ajax({
         type: "PUT",
         url: "/folder/" + id,
@@ -152,7 +153,6 @@
         err = true
       }
 
-      console.log(formData);
       for (var pair of formData.entries()) {
         console.log(pair)
       }
