@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get All Folders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        .folder-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .folder-list li {
+            margin-bottom: 10px;
+        }
+        .folder-card {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Folders</h1>
+        <ul class="folder-list">
+            {{#each getAllFolders}}
+            <li onclick="goToFolder('{{this._id}}')">
+                <div class="folder-card">
+                    <h2>{{this.name}}</h2>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
+    </div>
+</body>
+
+    <script>
+        function goToFolder(folderId) {
+            window.location.href = 'http://localhost:3001/folder/getfolders/' + encodeURIComponent(folderId);
+        }
+    </script>
+</html>
