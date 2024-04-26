@@ -5,6 +5,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Put,
   Render,
   Req,
   Request,
@@ -22,13 +23,8 @@ import { CreateNewFolderDto } from './dto/createnewfolder.dto';
 export class FolderControler {
   constructor(private readonly folderService: FolderService) {}
 
-  @Get('/create')
-  @Render('pages/createfolder.hbs')
-  async getForCreateFolder(@Res() res) {
-    // const createNew = await this.folderService.createNewFolder();
-  }
-
-  @Get('/getfolders')
+  //todo: get All folders
+  @Get()
   @Render('pages/getfolder.hbs')
   async getCreatedAllFolder(@Res() response, @Request() req) {
     const getAllFolders = await this.folderService.getAllFolders();
@@ -36,50 +32,30 @@ export class FolderControler {
       getAllFolders,
     };
   }
-
-  @Get('getfolders/:id')
+  //todo: Get Folder by ObjId
+  @Get('/:id')
   @Render('pages/index.hbs')
   async getFolderById(@Res() response: any, @Param('id') FolderId: string) {
     const folderById = await this.folderService.getFolderByObjId(FolderId);
     const folderImg = await this.folderService.getFolderImg(FolderId);
-    console.log(folderImg)
     return {
       folderById,
-      folderImg
+      folderImg,
     };
   }
+   //todo: Update Folder for cover img
+   @Put('/:id')
+   async updateFolderById(    @Request() req,
+   @Res() response: any,
+   @Param('id') FolderId: string,
+   @Body() data: any,) {
+     const folderUpdate = await this.folderService.updateFolder(FolderId, data);
+     return {
+      folderUpdate,
+     };
+   }
 
-  @Post('/create')
-  async createNewFolder(
-    @Request() req,
-    @Res() response: any,
-    @Body() createNewFolderDto: CreateNewFolderDto,
-  ) {
-    try {
-      console.log(createNewFolderDto);
-      const folder =
-        await this.folderService.createNewFolder(createNewFolderDto);
-      return response.status(HttpStatus.CREATED).json({
-        message: 'folder has been created successfully',
-        folder,
-      });
-    } catch (err) {
-      console.log(err);
-      return response.status(HttpStatus.BAD_REQUEST).json({
-        statusCode: 400,
-        message: 'Error:folder not created!',
-        error: 'Bad Request',
-      });
-    }
-  }
-
-  @Get()
-  @Render('pages/index')
-  async getFolder(@Res() res) {
-    const getAllFolders = await this.folderService.getFolder();
-    return { getAllFolders };
-  }
-
+  //todo: Image uploads
   @Post()
   @UseInterceptors(
     FileInterceptor('image', {
@@ -111,4 +87,43 @@ export class FolderControler {
       });
     }
   }
+
+  
+
+  // @Get('/create')
+  // @Render('pages/createfolder.hbs')
+  // async getForCreateFolder(@Res() res) {
+  //   // const createNew = await this.folderService.createNewFolder();
+  // }
+
+  // @Post('/create')
+  // async createNewFolder(
+  //   @Request() req,
+  //   @Res() response: any,
+  //   @Body() createNewFolderDto: CreateNewFolderDto,
+  // ) {
+  //   try {
+  //     console.log(createNewFolderDto);
+  //     const folder =
+  //       await this.folderService.createNewFolder(createNewFolderDto);
+  //     return response.status(HttpStatus.CREATED).json({
+  //       message: 'folder has been created successfully',
+  //       folder,
+  //     });
+  //   } catch (err) {
+  //     console.log(err);
+  //     return response.status(HttpStatus.BAD_REQUEST).json({
+  //       statusCode: 400,
+  //       message: 'Error:folder not created!',
+  //       error: 'Bad Request',
+  //     });
+  //   }
+  // }
+
+  // @Get()
+  // @Render('pages/index')
+  // async getFolder(@Res() res) {
+  //   const getAllFolders = await this.folderService.getFolder();
+  //   return { getAllFolders };
+  // }
 }

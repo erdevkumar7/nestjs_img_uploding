@@ -58,6 +58,12 @@
       background-color: #f9f9f9;
       transform: translate(-50%, 50%);
     }
+
+    .checkBoxCover {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   </style>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
@@ -65,17 +71,22 @@
 <body>
   <h1>{{folderById.name}}</h1>
   <div class="container">
+
     <ul class="folder-list">
       {{#each folderImg}}
       <li>
         <div class="folder-card">
-          <img src="/uploads/folder/{{this.img_name}}" width="200px" height="200px"/>
+          <img src="/uploads/folder/{{this.img_name}}" width="200px" height="200px" />
           <h5>{{this.img_name}}</h5>
+          <div class="checkBoxCover">
+            <p>Set Cover Image </p>
+            <input type="checkbox" id="coverPhoto" value="{{this._id}}" />
+            {{!-- <input type="hidden" id="folderId" value="{{folderImg._id}}"/> --}}
+          </div>
         </div>
       </li>
       {{/each}}
     </ul>
-
     <form class="fixed-form">
       <input type="file" id="inputImage">
       <p id="fileErr" class="err text-danger"></p>
@@ -85,35 +96,40 @@
   </div>
 </body>
 
-{{!--
-
-<body>
-  <div class='card'>
-    <div class='card-header'>
-      <h1 class='card-title'>{{folderById.name}}</h1>
-      <ul>
-        {{#each folderImg}}
-        <li>
-          <img src="/public/uploads/folder/{{this.img_name}}" />
-          {{this.img_name}}
-        </li>
-        {{/each}}
-      </ul>
-    </div>
-
-    <form>
-      <input type="file" id="inputImage">
-      <p id="fileErr" class="err text-danger"></p>
-      <input type="hidden" id="folder" value="{{folderById.id}}">
-      <button type="submit">Save</button>
-    </form>
-
-
-  </div>
-</body> --}}
-
 <script>
   $(document).ready(function () {
+
+    const checkboxes = document.querySelectorAll('.folder-card input');
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function () {
+        if (this.checked) {
+          checkboxes.forEach(cb => {
+            if (cb !== this) {
+              cb.checked = false;
+            }
+          });
+        }
+        checkboxes.forEach(img => img.classList.remove('selected'));
+        this.classList.add('selected');
+        setCoverImage(this.value);
+      });
+    });
+    function setCoverImage(imgIdForCover) {
+      console.log(imgIdForCover, 'CoverImgID');
+      {{!-- $.ajax({
+        type: "PUT",
+        url: "/folder/" + id,
+        data: { coverImg: imgIdForCover },
+        encode: true,
+      }).done(function (data, error) {
+        window.location.href = '/folder';
+      }); --}}
+
+    }
+
+
+
+
     $("form").submit(function (event) {
       event.preventDefault();
       var err = false;
@@ -145,7 +161,7 @@
         fetch("/folder", {
           method: "post",
           body: formData,
-        }).then((res) => window.location.href = '/folder/getfolders').catch((error) => ("Something went wrong!", error));
+        }).then((res) => window.location.href = '/folder/').catch((error) => ("Something went wrong!", error));
 
       }
     });

@@ -14,9 +14,6 @@ export class FolderService {
 
   async createNewFolder(createFolderDto: CreateFolderDto) {
     const newFolder = await new this.newfolderModel(createFolderDto);
-    if (!createFolderDto.order) {
-      //   newFolder.order = await this.maxOrder();
-    }
     return newFolder.save();
   }
 
@@ -38,6 +35,16 @@ export class FolderService {
     return folderkById;
   }
 
+  //todo: Update Folder for coverImg
+  async updateFolder(folderId: string, data: any) {
+    const folder = await this.newfolderModel.findByIdAndUpdate(folderId, data, { new: true });
+    if (!folder) {
+      throw new NotFoundException(`Folder not Updated`);
+    }
+    return folder.save();
+  }
+
+
   async createNewFile(createFolderDto: CreateFolderDto) {
     const newFolder = await new this.folderModel(createFolderDto);
     if (!createFolderDto.order) {
@@ -52,9 +59,12 @@ export class FolderService {
 
   //todo: getfolders images from Folder Collection
   async getFolderImg(folderId: string) {
-    const findImgByFolderId = await this.folderModel.find({
-      folderId: folderId,
-    });
+    const findImgByFolderId = await this.folderModel
+      .find({
+        folderId: folderId,
+      })
+      .sort({ createdAt: -1 })
+      .exec();
     if (!findImgByFolderId) {
       throw new NotFoundException(`Images are not found`);
     }

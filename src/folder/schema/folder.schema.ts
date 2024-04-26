@@ -17,6 +17,10 @@ export class Folder {
 
   @Prop({ default: false })
   deleted: boolean;
+
+  @Prop({ default: Date.now }) // Default value to the current timestamp
+  createdAt: Date;
+
 }
 const FolderSchema = SchemaFactory.createForClass(Folder);
 
