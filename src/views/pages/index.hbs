@@ -1,171 +1,117 @@
-<html lang='en'>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-  <meta charset='UTF-8' />
-  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-  <title>Folder Page</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f0f0;
-      height: 100vh;
-      overflow: hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get All Folders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
 
-    .container {
-      max-width: 50%;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      position: relative;
-      height: 100%;
-      overflow-y: auto;
-      /* Enable scrolling for the container */
-    }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
 
-    h1 {
-      text-align: center;
-    }
+        h1 {
+            text-align: center;
+        }
 
-    .folder-list {
-      list-style-type: none;
-      padding: 0;
-    }
+        .folder-list {
+            list-style-type: none;
+            padding: 0;
+        }
 
-    .folder-list li {
-      margin-bottom: 10px;
-    }
+        .folder-list li {
+            margin-bottom: 10px;
+        }
 
-    .folder-card {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      background-color: #f9f9f9;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+        .folder-card {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
 
-    .fixed-form {
-      position: fixed;
-      bottom: 1.5%;
-      left: 30.2%;
-      width: 200px;
-      background-color: #f9f9f9;
-      transform: translate(-50%, 50%);
-    }
-
-    .checkBoxCover {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  </style>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        .fixed-form {
+            position: fixed;
+            bottom: 10%;
+            left: 40%;
+            width: 350px;
+            background-color: #f9f9f9;
+            transform: translate(-50%, 50%);
+        }
+    </style>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
 
 <body>
-  <h1>{{folderById.name}}</h1>
-  <div class="container">
+    <div class="container">
+        <h1>My Folders</h1>
+        <ul class="folder-list">
+            {{#each getAllFolders}}
+            <li onclick="goToFolder('{{this._id}}')">
+                <div class="folder-card">
+                    {{#if this.cover_img}}
+                     <img src="/uploads/folder/{{this.cover_img}}" alt="Img" width="50px" height="50px" />                  
+                    {{else}}
+                    <img src="/uploads/coverphoto/cover.png" alt="Img" width="50px" height="50px" />
+                    {{/if}}
+                    <h3>{{this.name}}</h3>
+                </div>
+            </li>
+            {{/each}}
+        </ul>
 
-    <ul class="folder-list">
-      {{#each folderImg}}
-      <li>
-        <div class="folder-card">
-          <img src="/uploads/folder/{{this.img_name}}" width="200px" height="200px" />
-          <h5>{{this.img_name}}</h5>
-          <div class="checkBoxCover">
-            <p>Set Cover Image </p>
-            <input type="checkbox" id="coverPhoto" value="{{this._id}}" />
-            {{!-- <input type="hidden" id="folderId" value="{{folderImg._id}}"/> --}}
-          </div>
-        </div>
-      </li>
-      {{/each}}
-    </ul>
-    <form class="fixed-form">
-      <input type="file" id="inputImage">
-      <p id="fileErr" class="err text-danger"></p>
-      <input type="hidden" id="folder" value="{{folderById.id}}">
-      <button type="submit">Save</button>
-    </form>
-  </div>
+        <form method="post" class="fixed-form">
+            <h4>Create Folder</h4>
+            <input id="inputName" type="text" name="folderName" placeholder="Enter folder name" required>
+            <button type="submit">Create Folder</button>
+        </form>
+
+    </div>
 </body>
 
 <script>
-  $(document).ready(function () {
-
-    const checkboxes = document.querySelectorAll('.folder-card input');
-    checkboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', function () {
-        if (this.checked) {
-          checkboxes.forEach(cb => {
-            if (cb !== this) {
-              cb.checked = false;
-            }
-          });
-        }
-        checkboxes.forEach(img => img.classList.remove('selected'));
-        this.classList.add('selected');
-        setCoverImage(this.value);
-      });
-    });
-    function setCoverImage(imgIdForCover) {
-      console.log(imgIdForCover, 'CoverImgID');
-      
-      {{!-- $.ajax({
-        type: "PUT",
-        url: "/folder/" + id,
-        data: { coverImg: imgIdForCover },
-        encode: true,
-      }).done(function (data, error) {
-        window.location.href = '/folder';
-      }); --}}
-
+    function goToFolder(folderId) {
+        window.location.href = 'http://localhost:3001/folder/' + encodeURIComponent(folderId);
     }
+    $(document).ready(function () {
+        $("form").submit(function (event) {
+            var err = false;
+            $('.err').html('');
+            var formData = {
+                name: $("#inputName").val(),
+            };
 
+            if (formData.name == '') {
+                $('#nameErr').html('Required');
+                err = true
+            }
 
-
-
-    $("form").submit(function (event) {
-      event.preventDefault();
-      var err = false;
-      $('.err').html('');
-
-      const formData = new FormData();
-      var folderId = $("#folder").val()
-      var files = $('#inputImage')[0].files[0];
-      formData.append('img_name', files.name); //names save to be on database
-      formData.append('image', files); //save on folder
-      formData.append('folderId', folderId) // save folderId
-
-      var extArr = files.name.split('.');
-      var lastIndex = extArr.length - 1;
-      var extensions = ['svg', 'jpg', 'jpeg', 'png', 'gif', 'tiff', 'SVG', 'JPG', 'JPEG', 'PNG', 'GIF', 'TIFF'];
-      var ext = extArr[lastIndex];
-
-      if (!extensions.includes(ext)) {
-        $('#fileErr').html('Invalid file');
-        err = true
-      }
-
-      for (var pair of formData.entries()) {
-        console.log(pair)
-      }
-
-      if (!err) {
-        fetch("/folder", {
-          method: "post",
-          body: formData,
-        }).then((res) => window.location.href = '/folder/').catch((error) => ("Something went wrong!", error));
-
-      }
+            if (!err) {
+                $.ajax({
+                    type: "POST",
+                    url: "/folder/create",
+                    data: formData,
+                    dataType: "json",
+                    encode: true,
+                }).done(function (data, error) {
+                    window.location.href = '/folder/';
+                });
+            }
+            event.preventDefault();
+        });
     });
-  });
 </script>
 
 </html>

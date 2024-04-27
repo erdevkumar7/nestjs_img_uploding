@@ -25,7 +25,7 @@ export class FolderControler {
 
   //todo: get All folders
   @Get()
-  @Render('pages/getfolder.hbs')
+  @Render('pages/index.hbs')
   async getCreatedAllFolder(@Res() response, @Request() req) {
     const getAllFolders = await this.folderService.getAllFolders();
     return {
@@ -34,7 +34,7 @@ export class FolderControler {
   }
   //todo: Get Folder by ObjId
   @Get('/:id')
-  @Render('pages/index.hbs')
+  @Render('pages/images.hbs')
   async getFolderById(@Res() response: any, @Param('id') FolderId: string) {
     const folderById = await this.folderService.getFolderByObjId(FolderId);
     const folderImg = await this.folderService.getFolderImg(FolderId);
@@ -122,7 +122,7 @@ export class FolderControler {
 
 
   // @Get()
-  // @Render('pages/index')
+  // @Render('pages/images.hbs')
   // async getFolder(@Res() res) {
   //   const getAllFolders = await this.folderService.getFolder();
   //   return { getAllFolders };
