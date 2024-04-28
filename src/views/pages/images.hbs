@@ -64,6 +64,10 @@
       align-items: center;
       justify-content: center;
     }
+
+    .no-images-found {
+      text-align: center;
+    }
   </style>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
@@ -71,7 +75,7 @@
 <body>
   <h1>{{folderById.name}}</h1>
   <div class="container">
-
+    {{#if folderImg.length}}
     <ul class="folder-list">
       {{#each folderImg}}
       <li>
@@ -86,6 +90,12 @@
       </li>
       {{/each}}
     </ul>
+    {{else}}
+    <div class="no-images-found">
+      <p>No images found.</p>
+    </div>
+    {{/if}}
+
     <form class="fixed-form">
       <input type="file" id="inputImage">
       <p id="fileErr" class="err text-danger"></p>
@@ -97,7 +107,6 @@
 
 <script>
   $(document).ready(function () {
-
     const checkboxes = document.querySelectorAll('.folder-card input');
     checkboxes.forEach(checkbox => {
       checkbox.addEventListener('change', function () {
@@ -113,24 +122,27 @@
         setCoverImage(this.value);
       });
     });
-    //todo : Set cover image for golfder
-    function setCoverImage(imgIdForCover) {
-      var folderId = $("#folder").val()
-      //  console.log(imgIdForCover, 'CoverImgID', folderId);
-      $.ajax({
+
+    // Set cover image for folder
+    function setCoverImage(ImageName) {
+      var folderId = $("#folder").val();
+      const resDat = $.ajax({
         type: "PUT",
         url: "/folder/" + folderId,
-        data: { cover_img: imgIdForCover },
+        data: { cover_img: ImageName },
         encode: true,
-      }).done(function (data, error) {
-        window.location.href = '/folder';
-      });
+        success: function (data) {
+          console.log("Cover image updated successfully.");
+          window.location.href = "/";
+        },
+        error: function (xhr, status, error) {
+          console.error("Error:", error, xhr.responseText);
+        }
+      })
 
     }
 
-
-
-
+    // Form submission
     $("form").submit(function (event) {
       event.preventDefault();
       var err = false;
@@ -150,22 +162,33 @@
 
       if (!extensions.includes(ext)) {
         $('#fileErr').html('Invalid file');
-        err = true
+        err = true;
       }
 
       for (var pair of formData.entries()) {
-        console.log(pair)
+        console.log(pair);
       }
 
       if (!err) {
         fetch("/folder", {
           method: "post",
           body: formData,
-        }).then((res) => window.location.href = '/folder/').catch((error) => ("Something went wrong!", error));
-
+        })
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            console.log("Form data submitted successfully.");
+            window.location.href = `/folder/${folderId}`;
+          })
+          .catch(error => {
+            console.error("Error:", error);
+            alert("Something went wrong!");
+          });
       }
     });
   });
 </script>
+
 
 </html>

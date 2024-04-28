@@ -113,18 +113,4 @@ export class FolderControler {
     }
   }
 
-
-  // @Get('/create')
-  // @Render('pages/createfolder.hbs')
-  // async getForCreateFolder(@Res() res) {
-  //   // const createNew = await this.folderService.createNewFolder();
-  // }
-
-
-  // @Get()
-  // @Render('pages/images.hbs')
-  // async getFolder(@Res() res) {
-  //   const getAllFolders = await this.folderService.getFolder();
-  //   return { getAllFolders };
-  // }
 }
