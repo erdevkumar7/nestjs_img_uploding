@@ -25,7 +25,7 @@ export class FolderControler {
 
   //todo: get All folders
   @Get()
-  @Render('pages/index.hbs')
+  @Render('pages/folders.hbs')
   async getCreatedAllFolder(@Res() response, @Request() req) {
     const getAllFolders = await this.folderService.getAllFolders();
     return {

@@ -27,12 +27,15 @@
         }
 
         .folder-list {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             list-style-type: none;
             padding: 0;
         }
 
         .folder-list li {
-            margin-bottom: 10px;
+            margin: 10px;
         }
 
         .folder-card {
@@ -62,7 +65,7 @@
             <li onclick="goToFolder('{{this._id}}')">
                 <div class="folder-card">
                     {{#if this.cover_img}}
-                     <img src="/uploads/folder/{{this.cover_img}}" alt="Img" width="50px" height="50px" />                  
+                    <img src="/uploads/folder/{{this.cover_img}}" alt="Img" width="50px" height="50px" />
                     {{else}}
                     <img src="/uploads/coverphoto/cover.png" alt="Img" width="50px" height="50px" />
                     {{/if}}
