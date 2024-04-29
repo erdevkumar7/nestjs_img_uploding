@@ -79,7 +79,7 @@
     <ul class="folder-list">
       {{#each folderImg}}
       <li>
-        <div class="folder-card">
+        <div class="folder-card" draggable="true" data-imgname="{{this.img_name}}">
           <img src="/uploads/folder/{{this.img_name}}" width="200px" height="200px" />
           <h5>{{this.img_name}}</h5>
           <div class="checkBoxCover">
@@ -106,7 +106,64 @@
 </body>
 
 <script>
+  // Dras and drop Images
+  document.addEventListener('DOMContentLoaded', function () {
+  const imageList = document.getElementById('imageList');
+
+  let dragItem = null;
+
+  function handleDragStart(e) {
+    dragItem = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+  }
+
+  function handleDragOver(e) {
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+  }
+
+  function handleDragEnter(e) {
+    this.classList.add('over');
+  }
+
+  function handleDragLeave() {
+    this.classList.remove('over');
+  }
+
+  function handleDrop(e) {
+    if (e.stopPropagation) {
+      e.stopPropagation(); 
+    }
+    if (dragItem !== this) {
+      this.parentNode.insertBefore(dragItem, this.nextSibling);
+    }
+    return false;
+  }
+
+  function handleDragEnd() {
+    this.classList.remove('over');
+  }
+
+  const cards = document.querySelectorAll('.folder-card');
+  cards.forEach(function(card) {
+    card.addEventListener('dragstart', handleDragStart, false);
+    card.addEventListener('dragenter', handleDragEnter, false);
+    card.addEventListener('dragover', handleDragOver, false);
+    card.addEventListener('dragleave', handleDragLeave, false);
+    card.addEventListener('drop', handleDrop, false);
+    card.addEventListener('dragend', handleDragEnd, false);
+  });
+});
+
+
+
+
   $(document).ready(function () {
+    // function for Set cover image
     const checkboxes = document.querySelectorAll('.folder-card input');
     checkboxes.forEach(checkbox => {
       checkbox.addEventListener('change', function () {
@@ -133,7 +190,7 @@
         encode: true,
         success: function (data) {
           console.log("Cover image updated successfully.");
-          window.location.href = "/";
+          window.location.href = `/folder`;
         },
         error: function (xhr, status, error) {
           console.error("Error:", error, xhr.responseText);

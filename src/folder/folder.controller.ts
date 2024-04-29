@@ -50,9 +50,10 @@ export class FolderControler {
    @Param('id') FolderId: string,
    @Body() data: any,) {
      const folderUpdate = await this.folderService.updateFolder(FolderId, data);
-     return {
-      folderUpdate,
-     };
+     response.json(folderUpdate)
+    //  return {
+    //   folderUpdate,
+    //  };
    }
 
   //todo: Image uploads
