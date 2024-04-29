@@ -44,7 +44,7 @@ export class FolderControler {
     };
   }
    //todo: Update Folder for cover img
-   @Put('/:id')
+   @Put('/update/:id')
    async updateFolderById(    @Request() req,
    @Res() response: any,
    @Param('id') FolderId: string,

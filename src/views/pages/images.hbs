@@ -128,7 +128,7 @@
       var folderId = $("#folder").val();
       const resDat = $.ajax({
         type: "PUT",
-        url: "/folder/" + folderId,
+        url: "/folder/update/" + folderId,
         data: { cover_img: ImageName },
         encode: true,
         success: function (data) {
