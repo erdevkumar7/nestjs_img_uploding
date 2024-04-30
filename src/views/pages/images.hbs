@@ -108,58 +108,84 @@
 <script>
   // Dras and drop Images
   document.addEventListener('DOMContentLoaded', function () {
-  const imageList = document.getElementById('imageList');
+    const imageList = document.getElementById('imageList');
 
-  let dragItem = null;
+    let dragItem = null;
 
-  function handleDragStart(e) {
-    dragItem = this;
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', this.innerHTML);
-  }
-
-  function handleDragOver(e) {
-    if (e.preventDefault) {
-      e.preventDefault();
+    function handleDragStart(e) {
+        dragItem = this;
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/html', this.innerHTML);
     }
-    e.dataTransfer.dropEffect = 'move';
-    return false;
-  }
 
-  function handleDragEnter(e) {
-    this.classList.add('over');
-  }
-
-  function handleDragLeave() {
-    this.classList.remove('over');
-  }
-
-  function handleDrop(e) {
-    if (e.stopPropagation) {
-      e.stopPropagation(); 
+    function handleDragOver(e) {
+        if (e.preventDefault) {
+            e.preventDefault();
+        }
+        e.dataTransfer.dropEffect = 'move';
+        return false;
     }
-    if (dragItem !== this) {
-      this.parentNode.insertBefore(dragItem, this.nextSibling);
+
+    function handleDragEnter(e) {
+        this.classList.add('over');
     }
-    return false;
-  }
 
-  function handleDragEnd() {
-    this.classList.remove('over');
-  }
+    function handleDragLeave() {
+        this.classList.remove('over');
+    }
 
-  const cards = document.querySelectorAll('.folder-card');
-  cards.forEach(function(card) {
-    card.addEventListener('dragstart', handleDragStart, false);
-    card.addEventListener('dragenter', handleDragEnter, false);
-    card.addEventListener('dragover', handleDragOver, false);
-    card.addEventListener('dragleave', handleDragLeave, false);
-    card.addEventListener('drop', handleDrop, false);
-    card.addEventListener('dragend', handleDragEnd, false);
-  });
+    function handleDrop(e) {
+        if (e.stopPropagation) {
+            e.stopPropagation();
+        }
+        if (dragItem !== this) {
+            this.parentNode.insertBefore(dragItem, this.nextSibling);
+            // Update order in MongoDB after drop
+            updateOrderInMongoDB();
+        }
+        return false;
+    }
+
+    function handleDragEnd() {
+        this.classList.remove('over');
+    }
+
+    function updateOrderInMongoDB() {
+        const cards = document.querySelectorAll('.folder-card');
+        const newOrder = Array.from(cards).map((card, index) => ({
+            id: card.innerHTML, // Assuming you have a data-id attribute to identify documents
+            order: index
+        }));
+       var folderId = $("#folder").val();
+        console.log(cards,'cccccccccccccc',folderId)
+        // Send new order data to server to update MongoDB
+        {{!-- fetch("/folder/update/" + folderId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newOrder)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to update order in MongoDB');
+            }
+        })
+        .catch(error => {
+            console.error('Error updating order:', error);
+        }); --}}
+    }
+
+    const cards = document.querySelectorAll('.folder-card');
+    cards.forEach(function (card) {
+        card.addEventListener('dragstart', handleDragStart, false);
+        card.addEventListener('dragenter', handleDragEnter, false);
+        card.addEventListener('dragover', handleDragOver, false);
+        card.addEventListener('dragleave', handleDragLeave, false);
+        card.addEventListener('drop', handleDrop, false);
+        card.addEventListener('dragend', handleDragEnd, false);
+    });
 });
-
-
 
 
   $(document).ready(function () {
