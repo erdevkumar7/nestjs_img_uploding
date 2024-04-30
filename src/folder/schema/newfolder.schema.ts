@@ -12,11 +12,14 @@ export class NewFolder {
   @Prop()
   cover_img: string;
 
+  @Prop({ type: [String], default: [] })
+  imageOrder: string[]; 
+
   @Prop({ default: false })
   deleted: boolean;
 
   @Prop({ default: Date.now }) // Default value to the current timestamp
-  createdAt: Date;
+  createdAt: string;
 }
 const NewFolderSchema = SchemaFactory.createForClass(NewFolder);
 

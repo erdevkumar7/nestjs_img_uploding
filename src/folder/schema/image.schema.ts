@@ -16,7 +16,7 @@ export class Img {
   deleted: boolean;
 
   @Prop({ default: Date.now }) // Default value to the current timestamp
-  createdAt: Date;
+  createdAt: string;
 }
 const ImgSchema = SchemaFactory.createForClass(Img);
 

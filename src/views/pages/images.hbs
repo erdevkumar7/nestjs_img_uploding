@@ -75,6 +75,24 @@
 <body>
   <h1>{{folderById.name}}</h1>
   <div class="container">
+    {{!-- {{#if folderById.imageOrder.length}}
+    <ul class="folder-list">
+      {{#each folderImg}}
+      <li>
+        <div class="folder-card" draggable="true" data-imgname="{{this.img_name}}">
+          <img src="/uploads/folder/{{this.img_name}}" width="200px" height="200px" />
+          <h5>{{this.img_name}}</h5>
+          <div class="checkBoxCover">
+            <p>Set Cover Image </p>
+            <input type="checkbox" id="coverPhoto" value="{{this.img_name}}" />
+          </div>
+        </div>
+      </li>
+      {{/each}}
+    </ul>
+    {{else}} --}}
+    
+
     {{#if folderImg.length}}
     <ul class="folder-list">
       {{#each folderImg}}
@@ -95,6 +113,7 @@
       <p>No images found.</p>
     </div>
     {{/if}}
+    {{!-- {{/if}} --}}
 
     <form class="fixed-form">
       <input type="file" id="inputImage">
@@ -113,79 +132,92 @@
     let dragItem = null;
 
     function handleDragStart(e) {
-        dragItem = this;
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setData('text/html', this.innerHTML);
+      dragItem = this;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.innerHTML);
     }
 
     function handleDragOver(e) {
-        if (e.preventDefault) {
-            e.preventDefault();
-        }
-        e.dataTransfer.dropEffect = 'move';
-        return false;
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      e.dataTransfer.dropEffect = 'move';
+      return false;
     }
 
     function handleDragEnter(e) {
-        this.classList.add('over');
+      this.classList.add('over');
     }
 
     function handleDragLeave() {
-        this.classList.remove('over');
+      this.classList.remove('over');
     }
 
     function handleDrop(e) {
-        if (e.stopPropagation) {
-            e.stopPropagation();
-        }
-        if (dragItem !== this) {
-            this.parentNode.insertBefore(dragItem, this.nextSibling);
-            // Update order in MongoDB after drop
-            updateOrderInMongoDB();
-        }
-        return false;
+      if (e.stopPropagation) {
+        e.stopPropagation();
+      }
+      if (dragItem !== this) {
+        this.parentNode.insertBefore(dragItem, this.nextSibling);
+        // Update order in MongoDB after drop
+        updateOrderInMongoDB();
+      }
+      return false;
     }
 
     function handleDragEnd() {
-        this.classList.remove('over');
+      this.classList.remove('over');
     }
 
     function updateOrderInMongoDB() {
-        const cards = document.querySelectorAll('.folder-card');
-        const newOrder = Array.from(cards).map((card, index) => ({
-            id: card.innerHTML, // Assuming you have a data-id attribute to identify documents
-            order: index
-        }));
-       var folderId = $("#folder").val();
-        console.log(cards,'cccccccccccccc',folderId)
-        // Send new order data to server to update MongoDB
-        {{!-- fetch("/folder/update/" + folderId, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newOrder)
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to update order in MongoDB');
-            }
-        })
-        .catch(error => {
-            console.error('Error updating order:', error);
-        }); --}}
+      const cards = document.querySelectorAll('.folder-card');
+      const newOrder = Array.from(cards).map((card, index) => ({
+        id: card.innerHTML, // Assuming you have a data-id attribute to identify documents
+        order: index
+      }));
+      var folderId = $("#folder").val();
+      // Send new order data to server to update MongoDB
+      const imageUrls = newOrder.map(item => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(item.id.trim(), 'text/html');
+        const imgElement = doc.querySelector('img');
+        return imgElement ? getImageNameFromSrc(imgElement.src) : null;
+      });
+      // Extract only the image name from the src URL
+      function getImageNameFromSrc(src) {
+        const parts = src.split('/');
+        const imageName = parts[parts.length - 1];
+        return imageName;
+      }
+
+      const filteredImageUrls = imageUrls.filter(url => url !== null);
+      // Send new order data to server to update MongoDB
+      $.ajax({
+        type: "PUT",
+        url: "/folder/update/" + folderId,
+        data: { "imageOrder": filteredImageUrls }, // Convert array to JSON string
+        encode: true,
+        success: function (data) {
+          console.log("Cover image updated successfully.");
+          window.location.href = `/folder/${folderId}`;
+        },
+        error: function (xhr, status, error) {
+          console.error("Error:", error, xhr.responseText);
+        }
+      });
+
     }
 
     const cards = document.querySelectorAll('.folder-card');
     cards.forEach(function (card) {
-        card.addEventListener('dragstart', handleDragStart, false);
-        card.addEventListener('dragenter', handleDragEnter, false);
-        card.addEventListener('dragover', handleDragOver, false);
-        card.addEventListener('dragleave', handleDragLeave, false);
-        card.addEventListener('drop', handleDrop, false);
-        card.addEventListener('dragend', handleDragEnd, false);
+      card.addEventListener('dragstart', handleDragStart, false);
+      card.addEventListener('dragenter', handleDragEnter, false);
+      card.addEventListener('dragover', handleDragOver, false);
+      card.addEventListener('dragleave', handleDragLeave, false);
+      card.addEventListener('drop', handleDrop, false);
+      card.addEventListener('dragend', handleDragEnd, false);
     });
-});
+  });
 
 
   $(document).ready(function () {
