@@ -18,6 +18,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { CreateFolderDto } from './dto/createfolder.dto';
 import { CreateNewFolderDto } from './dto/createnewfolder.dto';
+import { ExtractImageFromRequest } from 'src/decorators/image.decorator';
 
 @Controller('/folder')
 export class FolderControler {
@@ -72,10 +73,11 @@ export class FolderControler {
   async createFile(
     @Request() req,
     @Res() response: any,
-    @Body() createFolderDto: CreateFolderDto,
+    @ExtractImageFromRequest() image: Express.Multer.File,
+    // @Body() createFolderDto: CreateFolderDto,
   ) {
     try {
-      const folder = await this.folderService.createNewFile(createFolderDto);
+      const folder = await this.folderService.createNewFile(image);
       return response.status(HttpStatus.CREATED).json({
         message: 'file has been created successfully',
         folder,

@@ -104,6 +104,7 @@
             <p>Set Cover Image </p>
             <input type="checkbox" id="coverPhoto" value="{{this.img_name}}" />
           </div>
+          <button onclick="handleImg('{{this._id}}')">Move Image -></button>
         </div>
       </li>
       {{/each}}
@@ -125,6 +126,23 @@
 </body>
 
 <script>
+  //todo: Move image to other folder
+  function handleImg(imageId) {
+  const folderContainer = document.getElementById('folderContainer');
+  const folderNames = ['Folder 1', 'Folder 2', 'Folder 3']; 
+
+  folderNames.forEach(folderName => {
+    const folderElement = document.createElement('div');
+    folderElement.classList.add('folder');
+    folderElement.textContent = folderName;
+    console.log(folderName,'ffffff')
+
+    
+  });
+
+}
+
+
   // Dras and drop Images
   document.addEventListener('DOMContentLoaded', function () {
     const imageList = document.getElementById('imageList');
