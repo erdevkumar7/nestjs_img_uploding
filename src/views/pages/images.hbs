@@ -10,7 +10,7 @@
       margin: 0;
       padding: 0;
       background-color: #f0f0f0;
-      height: 100vh;
+      height: 93vh;
       overflow: hidden;
     }
 
@@ -65,7 +65,7 @@
       justify-content: center;
     }
 
-    .checkBoxSelectFoder{
+    .checkBoxSelectFoder {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -125,9 +125,12 @@
           <h5>{{this.img_name}}</h5>
           <div class="checkBoxCover">
             <p>Set Cover Image </p>
-            <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" />
+            <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" {{#if ../folderById.cover_img}}{{#if
+              (isCoverChecked ../folderById.cover_img this.img_name)}}checked{{/if}}{{/if}} />
+            {{!-- <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" /> --}}
           </div>
-          <button class="openPopup" data-img-id="{{this._id}}">Move Image -></button>
+          <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
+            this.img_name)}}disabled{{/if}}{{/if}} class="openPopup" data-img-id="{{this._id}}">Move Image -></button>
         </div>
       </li>
       {{/each}}
@@ -141,8 +144,8 @@
         <ul id="listContainer">
           {{#each newFolders}}
           <div class="checkBoxSelectFoder">
-          <input type="checkbox" id="imageID" class="selectFolder" value="{{this._id}}" />
-          <p style="padding: 5px;">{{this.name}}</p>
+            <input type="checkbox" id="imageID" class="selectFolder" value="{{this._id}}" />
+            <p style="padding: 5px;">{{this.name}}</p>
           </div>
           {{/each}}
         </ul>
@@ -287,10 +290,10 @@
         url: "/folder/update/" + folderId,
         data: { cover_img: ImageName },
         encode: true,
-        success: function (data) {
+        success: setTimeout(function (data) {
           console.log("Cover image updated successfully.");
           window.location.href = `/folder`;
-        },
+        }, 500),
         error: function (xhr, status, error) {
           console.error("Error:", error, xhr.responseText);
         }
@@ -357,7 +360,7 @@
 
   function openPopup(imgId) {
     document.getElementById("popup").style.display = "block";
-      // function for change folder id in image
+    // function for change folder id in image
     const checkboxes = document.querySelectorAll('.checkBoxSelectFoder input');
     checkboxes.forEach(checkbox => {
       checkbox.addEventListener('change', function () {
@@ -372,10 +375,10 @@
         url: "/folder/" + imgId,
         data: { folderId: ImageName },
         encode: true,
-        success: setTimeout( function (data) {
+        success: setTimeout(function (data) {
           console.log("Cover image updated successfully.");
           window.location.href = `/folder/${folderId}`;
-        },500),
+        }, 500),
         error: function (xhr, status, error) {
           console.error("Error:", error, xhr.responseText);
         }

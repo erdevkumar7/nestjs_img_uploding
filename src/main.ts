@@ -10,6 +10,9 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '../public'));
   app.setBaseViewsDir(join(__dirname, '../src/views'));
   app.setViewEngine('hbs');
+  hbs.registerHelper('isCoverChecked', function (a, b, result) {
+    return a == b ? result : '';
+  });
 
   await app.listen(3001);
 }
