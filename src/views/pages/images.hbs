@@ -65,8 +65,49 @@
       justify-content: center;
     }
 
+    .checkBoxSelectFoder{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .no-images-found {
       text-align: center;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .popup-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 600px;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+      cursor: pointer;
     }
   </style>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -74,25 +115,8 @@
 
 <body>
   <h1>{{folderById.name}}</h1>
-  <div class="container">
-    {{!-- {{#if folderById.imageOrder.length}}
-    <ul class="folder-list">
-      {{#each folderImg}}
-      <li>
-        <div class="folder-card" draggable="true" data-imgname="{{this.img_name}}">
-          <img src="/uploads/folder/{{this.img_name}}" width="200px" height="200px" />
-          <h5>{{this.img_name}}</h5>
-          <div class="checkBoxCover">
-            <p>Set Cover Image </p>
-            <input type="checkbox" id="coverPhoto" value="{{this.img_name}}" />
-          </div>
-        </div>
-      </li>
-      {{/each}}
-    </ul>
-    {{else}} --}}
-    
 
+  <div class="container">
     {{#if folderImg.length}}
     <ul class="folder-list">
       {{#each folderImg}}
@@ -102,19 +126,36 @@
           <h5>{{this.img_name}}</h5>
           <div class="checkBoxCover">
             <p>Set Cover Image </p>
-            <input type="checkbox" id="coverPhoto" value="{{this.img_name}}" />
+            <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" />
           </div>
-          <button onclick="handleImg('{{this._id}}')">Move Image -></button>
+          <button class="openPopup" data-img-id="{{this._id}}">Move Image -></button>
         </div>
       </li>
       {{/each}}
     </ul>
+
+    <!-- The pop-up -->
+    <div class="popup" id="popup">
+      <div class="popup-content">
+        <span class="close" id="closePopup">&times;</span>
+        <h2>Select Folder</h2>
+        <ul id="listContainer">
+          {{#each getAllFolders}}
+          <div class="checkBoxSelectFoder">
+          <input type="checkbox" id="imageID" class="selectFolder" value="{{this._id}}" />
+          <p>{{this.name}}</p>
+          </div>
+          {{/each}}
+        </ul>
+      </div>
+    </div>
+
     {{else}}
     <div class="no-images-found">
       <p>No images found.</p>
     </div>
     {{/if}}
-    {{!-- {{/if}} --}}
+
 
     <form class="fixed-form">
       <input type="file" id="inputImage">
@@ -126,24 +167,63 @@
 </body>
 
 <script>
-  //todo: Move image to other folder
-  function handleImg(imageId) {
-  const folderContainer = document.getElementById('folderContainer');
-  const folderNames = ['Folder 1', 'Folder 2', 'Folder 3']; 
-
-  folderNames.forEach(folderName => {
-    const folderElement = document.createElement('div');
-    folderElement.classList.add('folder');
-    folderElement.textContent = folderName;
-    console.log(folderName,'ffffff')
-
-    
+  //todo: Move image to other folder ---------------------------
+  var popupButtons = document.querySelectorAll(".openPopup");
+  popupButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      var imgId = button.getAttribute("data-img-id");
+      openPopup(imgId);
+    });
   });
 
-}
+  function openPopup(imgId) {
+    document.getElementById("popup").style.display = "block";
+      // function for change folder id in image
+    const checkboxes = document.querySelectorAll('.checkBoxSelectFoder input');
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function () {
+        if (this.checked) {
+          checkboxes.forEach(cb => {
+            if (cb !== this) {
+              cb.checked = false;
+            }
+          });
+        }
+        checkboxes.forEach(img => img.classList.remove('selected'));
+        this.classList.add('selected');
+        setCoverImage(this.value);
+      });
+    });
+
+    function setCoverImage(ImageName) {
+      var folderId = $("#folder").val();
+      const resDat = $.ajax({
+        type: "PUT",
+        url: "/folder/" + imgId,
+        data: { folderId: ImageName },
+        encode: true,
+        success: function (data) {
+          console.log("Cover image updated successfully.");
+          window.location.href = `/folder/${folderId}`;
+        },
+        error: function (xhr, status, error) {
+          console.error("Error:", error, xhr.responseText);
+        }
+      })
+
+    }
+  }
+
+  document.getElementById("closePopup").addEventListener("click", function () {
+    document.getElementById("popup").style.display = "none";
+  });
+
+  
 
 
-  // Dras and drop Images
+
+
+  // Dras and drop Images --------------------------------
   document.addEventListener('DOMContentLoaded', function () {
     const imageList = document.getElementById('imageList');
 

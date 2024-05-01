@@ -39,11 +39,28 @@ export class FolderControler {
   async getFolderById(@Res() response: any, @Param('id') FolderId: string) {
     const folderById = await this.folderService.getFolderByObjId(FolderId);
     const folderImg = await this.folderService.getFolderImg(FolderId);
+    const getAllFolders = await this.folderService.getAllFolders();
     return {
       folderById,
       folderImg,
+      getAllFolders
     };
   }
+
+  //todo: Update image for Folder
+  @Put('/:id')
+  async updateImage(    @Request() req,
+  @Res() response: any,
+  @Param('id') imgId: string,
+  @Body() data: any,) {
+    const folderUpdate = await this.folderService.updateImage(imgId, data);
+    response.json(folderUpdate)
+   //  return {
+   //   folderUpdate,
+   //  };
+  }
+
+
    //todo: Update Folder for cover img
    @Put('/update/:id')
    async updateFolderById(    @Request() req,

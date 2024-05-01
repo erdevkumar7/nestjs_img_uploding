@@ -36,6 +36,15 @@ export class FolderService {
     return folderkById;
   }
 
+  //todo: update image for folder
+  async updateImage(imgId:string, data:any){
+    const updatedImage = await this.ImgModel.findByIdAndUpdate(imgId, data, {new: true});
+    if (!updatedImage) {
+      throw new NotFoundException(`updatedImage not Updated`);
+    }
+    return updatedImage.save();
+  }
+
   //todo: Update Folder for coverImg
   async updateFolder(folderId: string, data: any) {
     const folder = await this.newfolderModel.findByIdAndUpdate(folderId, data, { new: true });
