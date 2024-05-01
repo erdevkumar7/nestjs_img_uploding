@@ -40,10 +40,12 @@ export class FolderControler {
     const folderById = await this.folderService.getFolderByObjId(FolderId);
     const folderImg = await this.folderService.getFolderImg(FolderId);
     const getAllFolders = await this.folderService.getAllFolders();
+    const newFolders = getAllFolders.filter(obj => obj._id.toString() !== folderById._id.toString());
+  
     return {
       folderById,
       folderImg,
-      getAllFolders
+      newFolders
     };
   }
 

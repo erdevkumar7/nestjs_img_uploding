@@ -115,7 +115,6 @@
 
 <body>
   <h1>{{folderById.name}}</h1>
-
   <div class="container">
     {{#if folderImg.length}}
     <ul class="folder-list">
@@ -138,12 +137,12 @@
     <div class="popup" id="popup">
       <div class="popup-content">
         <span class="close" id="closePopup">&times;</span>
-        <h2>Select Folder</h2>
+        <h2 style="text-align: center;">Select Folder</h2>
         <ul id="listContainer">
-          {{#each getAllFolders}}
+          {{#each newFolders}}
           <div class="checkBoxSelectFoder">
           <input type="checkbox" id="imageID" class="selectFolder" value="{{this._id}}" />
-          <p>{{this.name}}</p>
+          <p style="padding: 5px;">{{this.name}}</p>
           </div>
           {{/each}}
         </ul>
@@ -167,62 +166,6 @@
 </body>
 
 <script>
-  //todo: Move image to other folder ---------------------------
-  var popupButtons = document.querySelectorAll(".openPopup");
-  popupButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      var imgId = button.getAttribute("data-img-id");
-      openPopup(imgId);
-    });
-  });
-
-  function openPopup(imgId) {
-    document.getElementById("popup").style.display = "block";
-      // function for change folder id in image
-    const checkboxes = document.querySelectorAll('.checkBoxSelectFoder input');
-    checkboxes.forEach(checkbox => {
-      checkbox.addEventListener('change', function () {
-        if (this.checked) {
-          checkboxes.forEach(cb => {
-            if (cb !== this) {
-              cb.checked = false;
-            }
-          });
-        }
-        checkboxes.forEach(img => img.classList.remove('selected'));
-        this.classList.add('selected');
-        setCoverImage(this.value);
-      });
-    });
-
-    function setCoverImage(ImageName) {
-      var folderId = $("#folder").val();
-      const resDat = $.ajax({
-        type: "PUT",
-        url: "/folder/" + imgId,
-        data: { folderId: ImageName },
-        encode: true,
-        success: function (data) {
-          console.log("Cover image updated successfully.");
-          window.location.href = `/folder/${folderId}`;
-        },
-        error: function (xhr, status, error) {
-          console.error("Error:", error, xhr.responseText);
-        }
-      })
-
-    }
-  }
-
-  document.getElementById("closePopup").addEventListener("click", function () {
-    document.getElementById("popup").style.display = "none";
-  });
-
-  
-
-
-
-
   // Dras and drop Images --------------------------------
   document.addEventListener('DOMContentLoaded', function () {
     const imageList = document.getElementById('imageList');
@@ -319,6 +262,7 @@
 
 
   $(document).ready(function () {
+    var folderId = $("#folder").val();
     // function for Set cover image
     const checkboxes = document.querySelectorAll('.folder-card input');
     checkboxes.forEach(checkbox => {
@@ -338,7 +282,6 @@
 
     // Set cover image for folder
     function setCoverImage(ImageName) {
-      var folderId = $("#folder").val();
       const resDat = $.ajax({
         type: "PUT",
         url: "/folder/update/" + folderId,
@@ -401,6 +344,48 @@
       }
     });
   });
+
+
+  //todo: Move image to other folder ---------------------------
+  var popupButtons = document.querySelectorAll(".openPopup");
+  popupButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      var imgId = button.getAttribute("data-img-id");
+      openPopup(imgId);
+    });
+  });
+
+  function openPopup(imgId) {
+    document.getElementById("popup").style.display = "block";
+      // function for change folder id in image
+    const checkboxes = document.querySelectorAll('.checkBoxSelectFoder input');
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function () {
+        moveImage(this.value);
+      });
+    });
+
+    function moveImage(ImageName) {
+      var folderId = $("#folder").val();
+      const resDat = $.ajax({
+        type: "PUT",
+        url: "/folder/" + imgId,
+        data: { folderId: ImageName },
+        encode: true,
+        success: setTimeout( function (data) {
+          console.log("Cover image updated successfully.");
+          window.location.href = `/folder/${folderId}`;
+        },500),
+        error: function (xhr, status, error) {
+          console.error("Error:", error, xhr.responseText);
+        }
+      })
+    }
+  }
+  document.getElementById("closePopup").addEventListener("click", function () {
+    document.getElementById("popup").style.display = "none";
+  });
+
 </script>
 
 
