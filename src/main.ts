@@ -14,6 +14,10 @@ async function bootstrap() {
     return a == b ? result : '';
   });
 
+    hbs.registerHelper('converString', function (arrString) {
+    return JSON.parse(arrString);;
+  });
+
   await app.listen(3001);
 }
 bootstrap();

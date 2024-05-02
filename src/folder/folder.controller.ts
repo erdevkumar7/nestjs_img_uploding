@@ -41,7 +41,19 @@ export class FolderControler {
     const folderImg = await this.folderService.getFolderImg(FolderId);
     const getAllFolders = await this.folderService.getAllFolders();
     const newFolders = getAllFolders.filter(obj => obj._id.toString() !== folderById._id.toString());
-  
+
+    // const newFolderById = folderById.imageOrder.map(jsonString => JSON.parse(jsonString));
+    if(folderById.imageOrder.length > 0){
+      const newFolderById = JSON.parse(folderById.imageOrder[0])
+     // console.log(newFolderById)
+     return {
+      folderById,
+      folderImg,
+      newFolders,
+      newFolderById,
+    };
+    }
+
     return {
       folderById,
       folderImg,

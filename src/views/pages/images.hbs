@@ -115,12 +115,37 @@
 
 <body>
   <h1>{{folderById.name}}</h1>
+  {{#if folderById.imageOrder.length}}
+  <div class="conatainer">
+    <ul class="folder-list">
+      {{#each newFolderById}}
+      <li>
+        <div class="folder-card" draggable="true" data-imgname="{{this.img_name}}">
+          <img src="/uploads/folder/{{this.img_name}}" width="200px" height="200px" />
+          <h5>{{this.img_name}}</h5>
+          <div class="checkBoxCover">
+            <p>Set Cover Image </p>
+            <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" {{#if ../folderById.cover_img}}{{#if
+              (isCoverChecked ../folderById.cover_img this.img_name)}}checked{{/if}}{{/if}} />
+          </div>
+          <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
+            this.img_name)}}disabled{{/if}}{{/if}} class="openPopup" data-img-id="{{this._id}}">Move Image -></button>
+        </div>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+  {{else}}
+
+
+
+
   <div class="container">
     {{#if folderImg.length}}
     <ul class="folder-list">
       {{#each folderImg}}
       <li>
-        <div class="folder-card" draggable="true" data-imgname="{{this.img_name}}">
+        <div class="folder-card" draggable="true" data-imgname="{{this.img_name}}" data-custom-value={{this._id}}>
           <img src="/uploads/folder/{{this.img_name}}" id={{this._id}} width="200px" height="200px" />
           <h5>{{this.img_name}}</h5>
           <div class="checkBoxCover">
@@ -166,6 +191,8 @@
       <button type="submit">Save</button>
     </form>
   </div>
+  {{/if}}
+
 </body>
 
 <script>
@@ -216,34 +243,25 @@
 
     function updateOrderInMongoDB() {
       const cards = document.querySelectorAll('.folder-card');
-      const newOrder = Array.from(cards).map((card, index) => ({
-        id: card.innerHTML, // Assuming you have a data-id attribute to identify documents
-        order: index
-      }));
-      
-      // Send new order data to server to update MongoDB
-      const imageUrls = newOrder.map(item => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(item.id.trim(), 'text/html');
-        const imgElement = doc.querySelector('img');
-        const imgId = imgElement.getAttribute('id')
-        return imgElement ? getImageNameFromSrc(imgElement.src, imgId) : null;
+
+      let newImgArray = []
+      cards.forEach(card => {
+        const imgElement = card.querySelector('img')
+        const _id = imgElement.getAttribute('id')
+        const img_name = getImageNameFromSrc(imgElement.src)
+        newImgArray.push({ _id, img_name })
       });
-      // Extract only the image name from the src URL
-      function getImageNameFromSrc(src, imgId) {
+      function getImageNameFromSrc(src) {
         const parts = src.split('/');
         const imageName = parts[parts.length - 1];
-        return  imageName;
+        return imageName;
       }
+      //console.log(newImgArray);
 
-      const filteredImageUrls = imageUrls.filter(url => url !== null);
-
-      console.log(filteredImageUrls)
-      // Send new order data to server to update MongoDB
-     $.ajax({
+      $.ajax({
         type: "PUT",
         url: "/folder/update/" + folderId,
-        data: { "imageOrder": filteredImageUrls }, // Convert array to JSON string
+        data: { imageOrder: JSON.stringify(newImgArray) },
         encode: true,
         success: function (data) {
           console.log("Cover image updated successfully.");
@@ -252,7 +270,7 @@
         error: function (xhr, status, error) {
           console.error("Error:", error, xhr.responseText);
         }
-      }); 
+      });
 
     }
 
@@ -267,6 +285,7 @@
     });
   });
 
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   $(document).ready(function () {
     var folderId = $("#folder").val();
