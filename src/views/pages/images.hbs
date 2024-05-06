@@ -121,10 +121,12 @@
       {{#each folderImg}}
       <li>
         <div class="folder-card" draggable="true" data-imgname="{{this.img_name}}" data-custom-value={{this._id}}>
+          <p>{{changeUnixTime this.createdAt}} </p>
           <img src="/uploads/folder/{{this.img_name}}" id={{this._id}} width="200px" height="200px" />
           <h5>{{this.img_name}}</h5>
           <div class="checkBoxCover">
             <p>Set Cover Image </p>
+            
             <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" {{#if ../folderById.cover_img}}{{#if
               (isCoverChecked ../folderById.cover_img this.img_name)}}checked{{/if}}{{/if}} />
             {{!-- <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" /> --}}

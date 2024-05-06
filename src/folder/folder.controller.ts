@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpStatus,
   Param,
@@ -68,6 +69,19 @@ export class FolderControler {
   @Param('id') imgId: string,
   @Body() data: any,) {
     const folderUpdate = await this.folderService.updateImage(imgId, data);
+    response.json(folderUpdate)
+    return {
+     folderUpdate,
+    };
+  }
+
+  //todo: deleteImage
+  @Delete('/image/:id')
+  async deleteImage(    @Request() req,
+  @Res() response: any,
+  @Param('id') imgId: string,
+  @Body() data: any,) {
+    const folderUpdate = await this.folderService.deleteImage(imgId);
     response.json(folderUpdate)
    //  return {
    //   folderUpdate,

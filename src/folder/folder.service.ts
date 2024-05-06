@@ -9,8 +9,9 @@ import { NewFolder, NewFolderDocument } from './schema/newfolder.schema';
 export class FolderService {
   constructor(
     @InjectModel(Img.name) private ImgModel: Model<ImgDocument>,
-    @InjectModel(NewFolder.name) private newfolderModel: Model<NewFolderDocument>,
-  ) { }
+    @InjectModel(NewFolder.name)
+    private newfolderModel: Model<NewFolderDocument>,
+  ) {}
 
   async createNewFolder(createFolderDto: CreateFolderDto) {
     const newFolder = await new this.newfolderModel(createFolderDto);
@@ -19,7 +20,9 @@ export class FolderService {
 
   //todo: Get All Folders
   async getAllFolders() {
-    const getAllFoldersData = await this.newfolderModel.find().sort({ createdAt: -1 })
+    const getAllFoldersData = await this.newfolderModel
+      .find()
+      .sort({ createdAt: -1 })
       .exec();
     if (!getAllFoldersData) {
       throw new NotFoundException(`Folders are not found`);
@@ -37,23 +40,35 @@ export class FolderService {
   }
 
   //todo: update image for folder
-  async updateImage(imgId:string, data:any){
-    const updatedImage = await this.ImgModel.findByIdAndUpdate(imgId, data, {new: true});
+  async updateImage(imgId: string, data: any) {
+    const updatedImage = await this.ImgModel.findByIdAndUpdate(imgId, data, {
+      new: true,
+    });
     if (!updatedImage) {
       throw new NotFoundException(`updatedImage not Updated`);
     }
     return updatedImage.save();
   }
 
+  //todo: Delete image
+  async deleteImage(imgId: string) {
+    const delelteImage = await this.ImgModel.findByIdAndDelete(imgId);
+    if (!delelteImage) {
+      throw new NotFoundException(`Deleted Image not Updated`);
+    }
+    return delelteImage._id;
+  }
+
   //todo: Update Folder for coverImg
   async updateFolder(folderId: string, data: any) {
-    const folder = await this.newfolderModel.findByIdAndUpdate(folderId, data, { new: true });
+    const folder = await this.newfolderModel.findByIdAndUpdate(folderId, data, {
+      new: true,
+    });
     if (!folder) {
       throw new NotFoundException(`Folder not Updated`);
     }
     return folder.save();
   }
-
 
   async createNewFile(createFolderDto: any) {
     const newImg = await new this.ImgModel(createFolderDto);
@@ -69,10 +84,9 @@ export class FolderService {
 
   //todo: getfolders images from Folder Collection
   async getFolderImg(folderId: string) {
-    const findImgByFolderId = await this.ImgModel
-      .find({
-        folderId: folderId,
-      })
+    const findImgByFolderId = await this.ImgModel.find({
+      folderId: folderId,
+    })
       .sort({ createdAt: -1 })
       .exec();
     if (!findImgByFolderId) {

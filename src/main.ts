@@ -14,9 +14,37 @@ async function bootstrap() {
     return a == b ? result : '';
   });
 
-    hbs.registerHelper('converString', function (arrString) {
-    return JSON.parse(arrString);;
+  hbs.registerHelper('converString', function (arrString) {
+    return JSON.parse(arrString);
   });
+
+  hbs.registerHelper('changeUnixTime', function (times) {
+    const timestamp = Number(times)
+    const date = new Date(timestamp);
+    const day = date.getDate();
+    const monthIndex = date.getMonth();
+    const year = date.getFullYear();
+    const monthNames = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+
+    const monthName = monthNames[monthIndex]; 
+    return `${day} ${monthName} ${year}`
+
+  });
+
+
 
   await app.listen(3001);
 }
