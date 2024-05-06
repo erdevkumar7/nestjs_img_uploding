@@ -115,31 +115,6 @@
 
 <body>
   <h1>{{folderById.name}}</h1>
-  {{#if folderById.imageOrder.length}}
-  <div class="conatainer">
-    <ul class="folder-list">
-      {{#each newFolderById}}
-      <li>
-        <div class="folder-card" draggable="true" data-imgname="{{this.img_name}}">
-          <img src="/uploads/folder/{{this.img_name}}" width="200px" height="200px" />
-          <h5>{{this.img_name}}</h5>
-          <div class="checkBoxCover">
-            <p>Set Cover Image </p>
-            <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" {{#if ../folderById.cover_img}}{{#if
-              (isCoverChecked ../folderById.cover_img this.img_name)}}checked{{/if}}{{/if}} />
-          </div>
-          <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
-            this.img_name)}}disabled{{/if}}{{/if}} class="openPopup" data-img-id="{{this._id}}">Move Image -></button>
-        </div>
-      </li>
-      {{/each}}
-    </ul>
-  </div>
-  {{else}}
-
-
-
-
   <div class="container">
     {{#if folderImg.length}}
     <ul class="folder-list">
@@ -191,22 +166,30 @@
       <button type="submit">Save</button>
     </form>
   </div>
-  {{/if}}
+
 
 </body>
 
 <script>
-  var folderId = $("#folder").val();
-  // Dras and drop Images --------------------------------
-  document.addEventListener('DOMContentLoaded', function () {
-    const imageList = document.getElementById('imageList');
+  $(document).ready(function () {
+    var folderId = $("#folder").val();
+    // Drag and drop functionality
+    document.querySelectorAll('.folder-card').forEach(item => {
+      item.addEventListener('dragstart', handleDragStart, false);
+      item.addEventListener('dragenter', handleDragEnter, false);
+      item.addEventListener('dragover', handleDragOver, false);
+      item.addEventListener('dragleave', handleDragLeave, false);
+      item.addEventListener('drop', handleDrop, false);
+      item.addEventListener('dragend', handleDragEnd, false);
+    });
 
-    let dragItem = null;
+    let dragSrcEl = null;
 
     function handleDragStart(e) {
-      dragItem = this;
+      this.classList.add('dragging');
+      dragSrcEl = this;
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', this.innerHTML);
+      e.dataTransfer.setData('text/html', this.outerHTML); // Store the entire HTML content of the dragged item
     }
 
     function handleDragOver(e) {
@@ -221,7 +204,7 @@
       this.classList.add('over');
     }
 
-    function handleDragLeave() {
+    function handleDragLeave(e) {
       this.classList.remove('over');
     }
 
@@ -229,66 +212,72 @@
       if (e.stopPropagation) {
         e.stopPropagation();
       }
-      if (dragItem !== this) {
-        this.parentNode.insertBefore(dragItem, this.nextSibling);
-        // Update order in MongoDB after drop
-        updateOrderInMongoDB();
+
+      if (dragSrcEl !== this) {
+        // Swap the HTML content of the dragged and dropped items
+        dragSrcEl.outerHTML = this.outerHTML;
+        this.outerHTML = e.dataTransfer.getData('text/html');
+
+        // Get the IDs of the dragged and dropped items
+        const draggedItemId = dragSrcEl.getAttribute('data-custom-value');
+        const droppedItemId = this.getAttribute('data-custom-value');
+
+        // Send the updated sequence/order information to the server
+        updateSequenceOrder(draggedItemId, droppedItemId);
       }
+
       return false;
     }
 
-    function handleDragEnd() {
-      this.classList.remove('over');
+    function handleDragEnd(e) {
+      this.classList.remove('dragging');
     }
 
-    function updateOrderInMongoDB() {
-      const cards = document.querySelectorAll('.folder-card');
-
-      let newImgArray = []
-      cards.forEach(card => {
-        const imgElement = card.querySelector('img')
-        const _id = imgElement.getAttribute('id')
-        const img_name = getImageNameFromSrc(imgElement.src)
-        newImgArray.push({ _id, img_name })
-      });
-      function getImageNameFromSrc(src) {
-        const parts = src.split('/');
-        const imageName = parts[parts.length - 1];
-        return imageName;
-      }
-      //console.log(newImgArray);
-
-      $.ajax({
-        type: "PUT",
-        url: "/folder/update/" + folderId,
-        data: { imageOrder: JSON.stringify(newImgArray) },
-        encode: true,
-        success: function (data) {
-          console.log("Cover image updated successfully.");
-          window.location.href = `/folder/${folderId}`;
+    // Function to update sequence/order in the database
+    function updateSequenceOrder(draggedItemId, droppedItemId) {
+      console.log(draggedItemId,'iiii',droppedItemId)
+      // Send a request to the server with the IDs of the dragged and dropped items
+      // Example using fetch:
+      {{!-- fetch('/api/updateSequence', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
         },
-        error: function (xhr, status, error) {
-          console.error("Error:", error, xhr.responseText);
-        }
-      });
-
+        body: JSON.stringify({
+          draggedItemId,
+          droppedItemId
+        })
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          console.log('Sequence/order updated successfully');
+        })
+        .catch(error => {
+          console.error('Error updating sequence/order:', error);
+        }); --}}
     }
 
-    const cards = document.querySelectorAll('.folder-card');
-    cards.forEach(function (card) {
-      card.addEventListener('dragstart', handleDragStart, false);
-      card.addEventListener('dragenter', handleDragEnter, false);
-      card.addEventListener('dragover', handleDragOver, false);
-      card.addEventListener('dragleave', handleDragLeave, false);
-      card.addEventListener('drop', handleDrop, false);
-      card.addEventListener('dragend', handleDragEnd, false);
-    });
-  });
 
-  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  $(document).ready(function () {
-    var folderId = $("#folder").val();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // function for Set cover image
     const checkboxes = document.querySelectorAll('.folder-card input');
     checkboxes.forEach(checkbox => {
