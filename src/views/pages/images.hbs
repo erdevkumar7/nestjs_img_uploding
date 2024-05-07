@@ -135,14 +135,13 @@
       /* 15% from the top and centered */
       padding: 20px;
       border: 1px solid #888;
-      width: 80%;
-      /* Could be more or less, depending on screen size */
+      width: 25%;
     }
 
     /* Style the buttons */
     #confirmDelete,
     #cancelDelete {
-      background-color: #f44336;
+      background-color: #f44936;
       color: white;
       padding: 10px 20px;
       margin: 5px;
@@ -171,16 +170,11 @@
           <h5>{{this.img_name}}</h5>
           <div class="checkBoxCover">
             <p>Set Cover Image </p>
-
             <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" {{#if ../folderById.cover_img}}{{#if
               (isCoverChecked ../folderById.cover_img this.img_name)}}checked{{/if}}{{/if}} />
-            {{!-- <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" /> --}}
           </div>
           <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
             this.img_name)}}disabled{{/if}}{{/if}} class="openPopup" data-img-id="{{this._id}}">Move Image -></button>
-
-          {{!-- <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
-            this.img_name)}}disabled{{/if}}{{/if}}>Delete</button> --}}
           <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
             this.img_name)}}disabled{{/if}}{{/if}} class="deleteButton" data-img-id="{{this._id}}"
             data-img-name="{{this.img_name}}">Delete</button>
@@ -219,8 +213,6 @@
       <p>No images found.</p>
     </div>
     {{/if}}
-
-
     <form class="fixed-form">
       <input type="file" id="inputImage">
       <p id="fileErr" class="err text-danger"></p>
@@ -228,8 +220,6 @@
       <button type="submit">Save</button>
     </form>
   </div>
-
-
 </body>
 
 <script>
@@ -323,54 +313,6 @@
   });
 
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-  var modal = document.getElementById("deleteConfirmationModal");
-  var deleteButtons = document.querySelectorAll(".deleteButton");
-  var confirmDeleteButton = document.getElementById("confirmDelete");
-  var cancelDeleteButton = document.getElementById("cancelDelete");
-  deleteButtons.forEach(function (button) {
-    button.addEventListener("click", function () {
-      var imgId = button.getAttribute("data-img-id");
-      var imgName = button.getAttribute("data-img-name");
-      openDeleteConfirmationModal(imgId, imgName);
-    });
-  });
-
-  // Function to open the delete confirmation modal
-  function openDeleteConfirmationModal(imgId, imgName) {
-    modal.style.display = "block";
-    modal.setAttribute("data-img-id", imgId);
-    modal.setAttribute("data-img-name", imgName);
-  }
-  confirmDeleteButton.addEventListener("click", function () {
-    var imgId = modal.getAttribute("data-img-id");
-    var imgName = modal.getAttribute("data-img-name");
-    deleteImage(imgId)
-    modal.style.display = "none";
-  });
-
-  function deleteImage(imgId) {
-    console.log(imgId, 'iii')
-    $.ajax({
-      type: "DELETE",
-      url: "/folder/image/" + imgId,
-      encode: true,
-      success: setTimeout(function (data) {
-        console.log("image Deleted successfully.");
-        window.location.href = `/folder/${folderId}`;
-      }, 500),
-      error: function (xhr, status, error) {
-        console.error("Error:", error, xhr.responseText);
-      }
-    })
-
-  }
-
-  cancelDeleteButton.addEventListener("click", function () {
-    modal.style.display = "none";
-  });
-
-
   $(document).ready(function () {
     var folderId = $("#folder").val();
     // function for Set cover image
@@ -496,7 +438,55 @@
     document.getElementById("popup").style.display = "none";
   });
 
+  //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  // Delete Image functionality
+  var modal = document.getElementById("deleteConfirmationModal");
+  var deleteButtons = document.querySelectorAll(".deleteButton");
+  var confirmDeleteButton = document.getElementById("confirmDelete");
+  var cancelDeleteButton = document.getElementById("cancelDelete");
+  deleteButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      var imgId = button.getAttribute("data-img-id");
+      var imgName = button.getAttribute("data-img-name");
+      openDeleteConfirmationModal(imgId, imgName);
+    });
+  });
+
+  // Function to open the delete confirmation modal
+  function openDeleteConfirmationModal(imgId, imgName) {
+    modal.style.display = "block";
+    modal.setAttribute("data-img-id", imgId);
+    modal.setAttribute("data-img-name", imgName);
+  }
+  confirmDeleteButton.addEventListener("click", function () {
+    var imgId = modal.getAttribute("data-img-id");
+    var imgName = modal.getAttribute("data-img-name");
+    deleteImage(imgId, imgName)
+    modal.style.display = "none";
+  });
+
+  function deleteImage(imgId, imgName) {
+    console.log(imgId, 'iii')
+    $.ajax({
+      type: "DELETE",
+      url: "/folder/image/" + imgId,
+      data: { imgName: imgName },
+      encode: true,
+      success: setTimeout(function (data) {
+        console.log("image Deleted successfully.");
+        window.location.href = `/folder/${folderId}`;
+      }, 500),
+      error: function (xhr, status, error) {
+        console.error("Error:", error, xhr.responseText);
+      }
+    })
+
+  }
+
+  cancelDeleteButton.addEventListener("click", function () {
+    modal.style.display = "none";
+  });
+
+
 </script>
-
-
 </html>

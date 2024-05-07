@@ -14,6 +14,8 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
+import * as fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 import { FolderService } from './folder.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -57,7 +59,6 @@ export class FolderControler {
         return indexA - indexB;
       });
     }
-    // console.log(newFolderById, 'oooooooooo', folderImg)
     return {
       folderById,
       folderImg,
@@ -86,13 +87,25 @@ export class FolderControler {
     @Request() req,
     @Res() response: any,
     @Param('id') imgId: string,
-    @Body() data: any,
+    @Body() body: any,
   ) {
-    const folderUpdate = await this.folderService.deleteImage(imgId);
-    // response.json(folderUpdate);
-     return {
-      folderUpdate,
-     };
+    try {
+      const imageName = body.imgName;
+      const imagePath = `./public/uploads/folder/${imageName}`;
+      fs.unlinkSync(imagePath);
+      const folderUpdate = await this.folderService.deleteImage(imgId);
+      return {
+        success: true,
+        message: 'Image deleted successfully',
+        folderUpdate,
+      };
+    } catch (error) {
+      console.log(error);
+      response.status(500).json({
+        success: false,
+        message: 'An error occurred while deleting the image',
+      });
+    }
   }
 
   //todo: Update Folder for cover img
@@ -105,9 +118,9 @@ export class FolderControler {
   ) {
     const folderUpdate = await this.folderService.updateFolder(FolderId, data);
     // response.json(folderUpdate);
-     return {
+    return {
       folderUpdate,
-     };
+    };
   }
 
   //todo: Image uploads
