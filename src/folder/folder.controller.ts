@@ -41,66 +41,74 @@ export class FolderControler {
     const folderById = await this.folderService.getFolderByObjId(FolderId);
     const folderImg = await this.folderService.getFolderImg(FolderId);
     const getAllFolders = await this.folderService.getAllFolders();
-    const newFolders = getAllFolders.filter(obj => obj._id.toString() !== folderById._id.toString());
+    const newFolders = getAllFolders.filter(
+      (obj) => obj._id.toString() !== folderById._id.toString(),
+    );
 
-    // const newFolderById = folderById.imageOrder.map(jsonString => JSON.parse(jsonString));
-    if(folderById.imageOrder.length > 0){
-      const newFolderById = JSON.parse(folderById.imageOrder[0])
-     // console.log(newFolderById)
-     return {
-      folderById,
-      folderImg,
-      newFolders,
-      newFolderById,
-    };
+    if (folderById.imageOrder.length > 0) {
+      const newFolderById = JSON.parse(folderById.imageOrder[0]);
+      const indexMap = new Map();
+      newFolderById.forEach((item, index) => {
+        indexMap.set(item._id, index);
+      });
+      folderImg.sort((a, b) => {
+        const indexA = indexMap.get(a._id.toString());
+        const indexB = indexMap.get(b._id.toString());
+        return indexA - indexB;
+      });
     }
-
+    // console.log(newFolderById, 'oooooooooo', folderImg)
     return {
       folderById,
       folderImg,
-      newFolders
+      newFolders,
     };
   }
 
   //todo: Update image for Folder
   @Put('/:id')
-  async updateImage(    @Request() req,
-  @Res() response: any,
-  @Param('id') imgId: string,
-  @Body() data: any,) {
+  async updateImage(
+    @Request() req,
+    @Res() response: any,
+    @Param('id') imgId: string,
+    @Body() data: any,
+  ) {
     const folderUpdate = await this.folderService.updateImage(imgId, data);
-    response.json(folderUpdate)
+    response.json(folderUpdate);
     return {
-     folderUpdate,
+      folderUpdate,
     };
   }
 
   //todo: deleteImage
   @Delete('/image/:id')
-  async deleteImage(    @Request() req,
-  @Res() response: any,
-  @Param('id') imgId: string,
-  @Body() data: any,) {
+  async deleteImage(
+    @Request() req,
+    @Res() response: any,
+    @Param('id') imgId: string,
+    @Body() data: any,
+  ) {
     const folderUpdate = await this.folderService.deleteImage(imgId);
-    response.json(folderUpdate)
-   //  return {
-   //   folderUpdate,
-   //  };
-  }
-
-
-   //todo: Update Folder for cover img
-   @Put('/update/:id')
-   async updateFolderById(    @Request() req,
-   @Res() response: any,
-   @Param('id') FolderId: string,
-   @Body() data: any,) {
-     const folderUpdate = await this.folderService.updateFolder(FolderId, data);
-     response.json(folderUpdate)
+    response.json(folderUpdate);
     //  return {
     //   folderUpdate,
     //  };
-   }
+  }
+
+  //todo: Update Folder for cover img
+  @Put('/update/:id')
+  async updateFolderById(
+    @Request() req,
+    @Res() response: any,
+    @Param('id') FolderId: string,
+    @Body() data: any,
+  ) {
+    const folderUpdate = await this.folderService.updateFolder(FolderId, data);
+    response.json(folderUpdate);
+    //  return {
+    //   folderUpdate,
+    //  };
+  }
 
   //todo: Image uploads
   @Post()
@@ -160,5 +168,4 @@ export class FolderControler {
       });
     }
   }
-
 }
