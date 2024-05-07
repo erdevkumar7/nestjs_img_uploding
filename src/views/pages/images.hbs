@@ -169,11 +169,11 @@
       display: none;
       position: fixed;
       z-index: 999;
-      padding-top: 100px;
+      padding-top: 10px;
       left: 0;
       top: 0;
-      width: 100%;
-      height: 100%;
+      width: 90%;
+      height: 90%;
       overflow: auto;
       background-color: rgb(0, 0, 0);
       background-color: rgba(0, 0, 0, 0.9);
@@ -183,7 +183,7 @@
       margin: auto;
       display: block;
       width: 80%;
-      max-width: 700px;
+      max-width: 50%;
     }
 
     .close1 {
@@ -269,12 +269,7 @@
       <p>No images found.</p>
     </div>
     {{/if}}
-    {{!-- <form class="fixed-form">
-      <input type="file" id="inputImage">
-      <p id="fileErr" class="err text-danger"></p>
-      <input type="hidden" id="folder" value="{{folderById.id}}">
-      <button type="submit">Save</button>
-    </form> --}}
+
     <form id="uploadForm" class="fixed-form" enctype="multipart/form-data">
       <input type="file" id="inputImage" accept="image/*">
       <p id="fileErr" class="err text-danger"></p>
@@ -282,9 +277,11 @@
       <button type="submit">Save</button>
     </form>
 
-    <div id="imagePreviewModal" class="modal1">
+    <div id="imagePreviewModal" class="modal1" style="width: 80%; height:80%">
       <span class="close1">&times;</span>
       <img id="imagePreview" class="modal-content1" src="#" alt="Preview" width="75%" height="75%">
+      <button id="cropImageBtn">Crop Image</button>
+      <button id="restoreImageBtn">Restore Image</button>
     </div>
   </div>
 </body>
@@ -382,26 +379,52 @@
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   $(document).ready(function () {
     // Image Preview
+    var cropper;
+
     $('#inputImage').on('change', function (e) {
       var reader = new FileReader();
       reader.onload = function (e) {
         $('#imagePreview').attr('src', e.target.result);
         $('#imagePreviewModal').show();
+
+        // Initialize Cropper.js
+        cropper = new Cropper(document.getElementById('imagePreview'), {
+          aspectRatio: 16 / 9, // You can set the aspect ratio as needed
+          viewMode: 1,
+          crop: function (event) {
+            // You can add logic here to handle cropping preview
+            console.log('eee', event)
+          }
+        });
       }
       reader.readAsDataURL(e.target.files[0]);
     });
 
-    // Close the modal when the close button or outside the modal is clicked
-    $('#imagePreviewModal .close1').on('click', function () {
-      $('#imagePreviewModal').hide();
-    });
+        // Crop the image
+    $('#cropImageBtn').on('click', function() {
+      var croppedCanvas = cropper.getCroppedCanvas({
+        width: 300, // You can set the desired width and height for the cropped image
+        height: 300,
+        fillColor: '#fff' // You can set the fill color for the area outside the cropped image
+      });
 
-    $(window).on('click', function (e) {
-      if (e.target == $('#imagePreviewModal')[0]) {
         $('#imagePreviewModal').hide();
-      }
+        cropper.destroy(); // Destroy the cropper instance
+      // Display the cropped image in a new window or upload it to the server
+     // window.open(croppedCanvas.toDataURL());
     });
 
+
+        // Close the modal when the close button or outside the modal is clicked
+    $('#imagePreviewModal .close').on('click', function () {
+      $('#imagePreviewModal').hide();
+      cropper.destroy(); // Destroy the cropper instance
+    });
+
+    // Restore the image
+    $('#restoreImageBtn').on('click', function () {
+      cropper.reset(); // Reset the cropper to its initial state
+    });
 
 
 
