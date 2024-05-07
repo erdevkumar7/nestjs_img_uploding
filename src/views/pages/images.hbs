@@ -109,6 +109,51 @@
       text-decoration: none;
       cursor: pointer;
     }
+
+    .modal {
+      display: none;
+      /* Hidden by default */
+      position: fixed;
+      /* Stay in place */
+      z-index: 1;
+      /* Sit on top */
+      left: 0;
+      top: 0;
+      width: 100%;
+      /* Full width */
+      height: 100%;
+      /* Full height */
+      overflow: auto;
+      /* Enable scroll if needed */
+      background-color: rgba(0, 0, 0, 0.4);
+      /* Black w/ opacity */
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      /* 15% from the top and centered */
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      /* Could be more or less, depending on screen size */
+    }
+
+    /* Style the buttons */
+    #confirmDelete,
+    #cancelDelete {
+      background-color: #f44336;
+      color: white;
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #confirmDelete:hover,
+    #cancelDelete:hover {
+      background-color: #da190b;
+    }
   </style>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
@@ -126,13 +171,19 @@
           <h5>{{this.img_name}}</h5>
           <div class="checkBoxCover">
             <p>Set Cover Image </p>
-            
+
             <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" {{#if ../folderById.cover_img}}{{#if
               (isCoverChecked ../folderById.cover_img this.img_name)}}checked{{/if}}{{/if}} />
             {{!-- <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" /> --}}
           </div>
           <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
             this.img_name)}}disabled{{/if}}{{/if}} class="openPopup" data-img-id="{{this._id}}">Move Image -></button>
+
+          {{!-- <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
+            this.img_name)}}disabled{{/if}}{{/if}}>Delete</button> --}}
+          <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
+            this.img_name)}}disabled{{/if}}{{/if}} class="deleteButton" data-img-id="{{this._id}}"
+            data-img-name="{{this.img_name}}">Delete</button>
         </div>
       </li>
       {{/each}}
@@ -151,6 +202,15 @@
           </div>
           {{/each}}
         </ul>
+      </div>
+    </div>
+
+    <!-- Modal for confirmation -->
+    <div id="deleteConfirmationModal" class="modal">
+      <div class="modal-content">
+        <p>Are you sure you want to delete this image?</p>
+        <button id="confirmDelete">OK</button>
+        <button id="cancelDelete">Cancel</button>
       </div>
     </div>
 
@@ -173,9 +233,9 @@
 </body>
 
 <script>
-    var folderId = $("#folder").val();
+  var folderId = $("#folder").val();
   // Dras and drop Images --------------------------------
-   document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function () {
     const imageList = document.getElementById('imageList');
 
     let dragItem = null;
@@ -235,7 +295,7 @@
       }
       console.log(newImgArray);
 
-    $.ajax({
+      $.ajax({
         type: "PUT",
         url: "/folder/update/" + folderId,
         data: { imageOrder: JSON.stringify(newImgArray) },
@@ -247,7 +307,7 @@
         error: function (xhr, status, error) {
           console.error("Error:", error, xhr.responseText);
         }
-      }); 
+      });
 
     }
 
@@ -263,6 +323,53 @@
   });
 
   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+  var modal = document.getElementById("deleteConfirmationModal");
+  var deleteButtons = document.querySelectorAll(".deleteButton");
+  var confirmDeleteButton = document.getElementById("confirmDelete");
+  var cancelDeleteButton = document.getElementById("cancelDelete");
+  deleteButtons.forEach(function (button) {
+    button.addEventListener("click", function () {
+      var imgId = button.getAttribute("data-img-id");
+      var imgName = button.getAttribute("data-img-name");
+      openDeleteConfirmationModal(imgId, imgName);
+    });
+  });
+
+  // Function to open the delete confirmation modal
+  function openDeleteConfirmationModal(imgId, imgName) {
+    modal.style.display = "block";
+    modal.setAttribute("data-img-id", imgId);
+    modal.setAttribute("data-img-name", imgName);
+  }
+  confirmDeleteButton.addEventListener("click", function () {
+    var imgId = modal.getAttribute("data-img-id");
+    var imgName = modal.getAttribute("data-img-name");
+    deleteImage(imgId)
+    modal.style.display = "none";
+  });
+
+  function deleteImage(imgId) {
+    console.log(imgId, 'iii')
+    $.ajax({
+      type: "DELETE",
+      url: "/folder/image/" + imgId,
+      encode: true,
+      success: setTimeout(function (data) {
+        console.log("image Deleted successfully.");
+        window.location.href = `/folder/${folderId}`;
+      }, 500),
+      error: function (xhr, status, error) {
+        console.error("Error:", error, xhr.responseText);
+      }
+    })
+
+  }
+
+  cancelDeleteButton.addEventListener("click", function () {
+    modal.style.display = "none";
+  });
+
 
   $(document).ready(function () {
     var folderId = $("#folder").val();

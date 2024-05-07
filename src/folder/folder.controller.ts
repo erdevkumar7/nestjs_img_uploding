@@ -89,10 +89,10 @@ export class FolderControler {
     @Body() data: any,
   ) {
     const folderUpdate = await this.folderService.deleteImage(imgId);
-    response.json(folderUpdate);
-    //  return {
-    //   folderUpdate,
-    //  };
+    // response.json(folderUpdate);
+     return {
+      folderUpdate,
+     };
   }
 
   //todo: Update Folder for cover img
@@ -104,10 +104,10 @@ export class FolderControler {
     @Body() data: any,
   ) {
     const folderUpdate = await this.folderService.updateFolder(FolderId, data);
-    response.json(folderUpdate);
-    //  return {
-    //   folderUpdate,
-    //  };
+    // response.json(folderUpdate);
+     return {
+      folderUpdate,
+     };
   }
 
   //todo: Image uploads
