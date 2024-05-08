@@ -130,7 +130,13 @@ export class FolderControler {
       storage: diskStorage({
         destination: './public/uploads/folder',
         filename: (req, file, callback) => {
-          const filename = `${file.originalname}`;
+          const parts = file.originalname.split('.');
+          const ext = parts[parts.length - 1];
+          //Generating six digit random number
+          const random = Math.floor(100000 + Math.random() * 900000);
+          const filename = `${parts[0]}_${random}.${ext}`;
+          // const filename = `${file.originalname}`;
+          // callback(null, filename);
           callback(null, filename);
         },
       }),
@@ -140,10 +146,12 @@ export class FolderControler {
     @Request() req,
     @Res() response: any,
     @ExtractImageFromRequest() image: Express.Multer.File,
+    @UploadedFile() uploadImg: any,
     // @Body() createFolderDto: CreateFolderDto,
   ) {
     try {
-      const folder = await this.folderService.createNewFile(image);
+      const filenameSaveToDB = uploadImg.filename
+      const folder = await this.folderService.createNewFile(image,filenameSaveToDB);
       return response.status(HttpStatus.CREATED).json({
         message: 'file has been created successfully',
         folder,

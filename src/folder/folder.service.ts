@@ -70,8 +70,8 @@ export class FolderService {
     return folder.save();
   }
 
-  async createNewFile(createFolderDto: any) {
-    const newImg = await new this.ImgModel(createFolderDto);
+  async createNewFile(createFolderDto: any, filenameSaveToDB:any) {
+    const newImg = await new this.ImgModel({...createFolderDto, img_name:filenameSaveToDB});
     if (!createFolderDto.order) {
       //   newFolder.order = await this.maxOrder();
     }
