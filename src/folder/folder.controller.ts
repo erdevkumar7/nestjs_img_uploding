@@ -15,7 +15,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import * as fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
 import { FolderService } from './folder.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';

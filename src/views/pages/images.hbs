@@ -393,6 +393,7 @@
 				// Send the cropped image data to the server using AJAX
 				const formData = new FormData();
 				formData.append('image', blobImage);
+
 				fetch(`/folder/${imgId}`, {
 					method: "put",
 					body: formData,
@@ -408,11 +409,10 @@
 						console.error("Error:", error);
 						alert("Something went wrong!");
 					});
+
 				// Close the modal
 				$('#cropModal').css('display', 'none');
 				cropper.destroy(); // Destroy the cropper instance
-
-
 			});
 
 		});
