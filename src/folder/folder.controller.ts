@@ -67,14 +67,51 @@ export class FolderControler {
   }
 
   //todo: Update image for Folder
+  @Put('/image/:id')
+  async updateImgForFolder(
+	@Request() req,
+	@Res() response: any,
+	@Param('id') imgId: string,
+	@Body() data: any,
+ ) {
+	const folderUpdate = await this.folderService.updateImage(imgId, data);
+	response.json(folderUpdate);
+	return {
+	  folderUpdate,
+	};
+ }
+
+
+//todo: Update for crop image
   @Put('/:id')
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './public/uploads/folder',
+        filename: (req, file, callback) => {
+          const parts = file.originalname.split('.');
+          const ext = parts[parts.length - 1];
+          //Generating six digit random number
+          const random = Math.floor(100000 + Math.random() * 900000);
+          const filename = `${parts[0]}_${random}.${ext}`;
+          // const filename = `${file.originalname}`;
+          // callback(null, filename);
+          callback(null, filename);
+        },
+      }),
+    }),
+  )
   async updateImage(
     @Request() req,
     @Res() response: any,
     @Param('id') imgId: string,
-    @Body() data: any,
+    // @Body() data: any,
+    @ExtractImageFromRequest() image: Express.Multer.File,
+    @UploadedFile() uploadImg: any,
   ) {
-    const folderUpdate = await this.folderService.updateImage(imgId, data);
+    const filenameSaveToDB = uploadImg.filename
+    console.log(filenameSaveToDB)
+    const folderUpdate = await this.folderService.updateImage(imgId, {img_name: filenameSaveToDB});
     response.json(folderUpdate);
     return {
       folderUpdate,

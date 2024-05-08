@@ -1,606 +1,604 @@
 <html lang='en'>
 
 <head>
-   <meta charset='UTF-8' />
-   <meta name='viewport' content='width=device-width, initial-scale=1.0' />
-   <title>Folder Page</title>
-   <style>
-      body {
-         font-family: Arial, sans-serif;
-         margin: 0;
-         padding: 0;
-         background-color: #f0f0f0;
-         height: 93vh;
-         overflow: hidden;
-      }
+	<meta charset='UTF-8' />
+	<meta name='viewport' content='width=device-width, initial-scale=1.0' />
+	<title>Folder Page</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f0f0f0;
+			height: 93vh;
+			overflow: hidden;
+		}
 
-      .container {
-         max-width: 50%;
-         margin: 20px auto;
-         padding: 20px;
-         background-color: #fff;
-         border-radius: 8px;
-         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-         position: relative;
-         height: 100%;
-         overflow-y: auto;
-         /* Enable scrolling for the container */
-      }
+		.container {
+			max-width: 50%;
+			margin: 20px auto;
+			padding: 20px;
+			background-color: #fff;
+			border-radius: 8px;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			position: relative;
+			height: 100%;
+			overflow-y: auto;
+			/* Enable scrolling for the container */
+		}
 
-      h1 {
-         text-align: center;
-      }
+		h1 {
+			text-align: center;
+		}
 
-      .folder-list {
-         list-style-type: none;
-         padding: 0;
-      }
+		.folder-list {
+			list-style-type: none;
+			padding: 0;
+		}
 
-      .folder-list li {
-         margin-bottom: 10px;
-      }
+		.folder-list li {
+			margin-bottom: 10px;
+		}
 
-      .folder-card {
-         padding: 10px;
-         border: 1px solid #ccc;
-         border-radius: 4px;
-         background-color: #f9f9f9;
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-      }
+		.folder-card {
+			padding: 10px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			background-color: #f9f9f9;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
 
-      .fixed-form {
-         position: fixed;
-         bottom: 1.5%;
-         left: 30.2%;
-         width: 200px;
-         background-color: #f9f9f9;
-         transform: translate(-50%, 50%);
-      }
+		.fixed-form {
+			position: fixed;
+			bottom: 1.5%;
+			left: 30.2%;
+			width: 200px;
+			background-color: #f9f9f9;
+			transform: translate(-50%, 50%);
+		}
 
-      .checkBoxCover {
-         display: flex;
-         align-items: center;
-         justify-content: center;
-      }
+		.checkBoxCover {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 
-      .checkBoxSelectFoder {
-         display: flex;
-         align-items: center;
-         justify-content: center;
-      }
+		.checkBoxSelectFoder {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
 
-      .no-images-found {
-         text-align: center;
-      }
+		.no-images-found {
+			text-align: center;
+		}
 
-      .popup {
-         display: none;
-         position: fixed;
-         z-index: 1;
-         left: 0;
-         top: 0;
-         width: 100%;
-         height: 100%;
-         overflow: auto;
-         background-color: rgba(0, 0, 0, 0.5);
-      }
+		.popup {
+			display: none;
+			position: fixed;
+			z-index: 1;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0, 0, 0, 0.5);
+		}
 
-      .popup-content {
-         background-color: #fefefe;
-         margin: 15% auto;
-         padding: 20px;
-         border: 1px solid #888;
-         width: 80%;
-         max-width: 600px;
-      }
+		.popup-content {
+			background-color: #fefefe;
+			margin: 15% auto;
+			padding: 20px;
+			border: 1px solid #888;
+			width: 80%;
+			max-width: 600px;
+		}
 
-      .close {
-         color: #aaa;
-         float: right;
-         font-size: 28px;
-         font-weight: bold;
-      }
+		.close {
+			color: #aaa;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+		}
 
-      .close:hover,
-      .close:focus {
-         color: black;
-         text-decoration: none;
-         cursor: pointer;
-      }
+		.close:hover,
+		.close:focus {
+			color: black;
+			text-decoration: none;
+			cursor: pointer;
+		}
 
-      .modal {
-         display: none;
-         /* Hidden by default */
-         position: fixed;
-         /* Stay in place */
-         z-index: 1;
-         /* Sit on top */
-         left: 0;
-         top: 0;
-         width: 100%;
-         /* Full width */
-         height: 100%;
-         /* Full height */
-         overflow: auto;
-         /* Enable scroll if needed */
-         background-color: rgba(0, 0, 0, 0.4);
-         /* Black w/ opacity */
-      }
+		.modal {
+			display: none;
+			/* Hidden by default */
+			position: fixed;
+			/* Stay in place */
+			z-index: 1;
+			/* Sit on top */
+			left: 0;
+			top: 0;
+			width: 100%;
+			/* Full width */
+			height: 100%;
+			/* Full height */
+			overflow: auto;
+			/* Enable scroll if needed */
+			background-color: rgba(0, 0, 0, 0.4);
+			/* Black w/ opacity */
+		}
 
-      .modal-content {
-         background-color: #fefefe;
-         margin: 15% auto;
-         /* 15% from the top and centered */
-         padding: 20px;
-         border: 1px solid #888;
-         width: 25%;
-      }
+		.modal-content {
+			background-color: #fefefe;
+			margin: 15% auto;
+			/* 15% from the top and centered */
+			padding: 20px;
+			border: 1px solid #888;
+			width: 25%;
+		}
 
-      /* Style the buttons */
-      #confirmDelete,
-      #cancelDelete {
-         background-color: #f44936;
-         color: white;
-         padding: 10px 20px;
-         margin: 5px;
-         border: none;
-         cursor: pointer;
-      }
+		/* Style the buttons */
+		#confirmDelete,
+		#cancelDelete {
+			background-color: #f44936;
+			color: white;
+			padding: 10px 20px;
+			margin: 5px;
+			border: none;
+			cursor: pointer;
+		}
 
-      #confirmDelete:hover,
-      #cancelDelete:hover {
-         background-color: #da190b;
-      }
+		#confirmDelete:hover,
+		#cancelDelete:hover {
+			background-color: #da190b;
+		}
 
-      .deleteAndMoveButton {
-         display: flex;
-      }
+		.deleteAndMoveButton {
+			display: flex;
+		}
 
-      .deleteAndMoveButton button {
-         margin-right: 1rem;
-      }
+		.deleteAndMoveButton button {
+			margin-right: 1rem;
+		}
 
-      #imagePreviewContainer {}
-   </style>
-   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-   <!-- Include Cropper.js -->
-   <link href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css" rel="stylesheet">
-   <script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
+		#imagePreviewContainer {}
+	</style>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<!-- Include Cropper.js -->
+	<link href="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/cropperjs/dist/cropper.min.js"></script>
 
-   <!-- Include jQuery (optional, if you're using it in your project) -->
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Include jQuery (optional, if you're using it in your project) -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 </head>
 
 <body>
-   <h1>{{folderById.name}}</h1>
-   <div class="container">
-      {{#if folderImg.length}}
-      <ul class="folder-list">
-         {{#each folderImg}}
-         <li>
-            <div class="folder-card" draggable="true" data-imgname="{{this.img_name}}" data-custom-value={{this._id}}>
-               <p>{{changeUnixTime this.createdAt}} </p>
-               <img src="/uploads/folder/{{this.img_name}}" id={{this._id}} width="200px" height="200px" />
-               <h5>{{this.img_name}}</h5>
-               <div class="checkBoxCover">
-                  <p>Set Cover Image </p>
-                  <input type="checkbox" class="coverPhoto" value="{{this.img_name}}" {{#if
-                     ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
-                     this.img_name)}}checked{{/if}}{{/if}} />
-               </div>
-               <div class="deleteAndMoveButton">
-                  <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
-                     this.img_name)}}disabled{{/if}}{{/if}} class="deleteButton" data-img-id="{{this._id}}"
-                     data-img-name="{{this.img_name}}">Delete</button>
-                  <button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
-                     this.img_name)}}disabled{{/if}}{{/if}} class="openPopup" data-img-id="{{this._id}}">Move
-                     Image -></button>
-                  <button class="cropButton">Crop</button>
-               </div>
-            </div>
-         </li>
-         {{/each}}
-      </ul>
+	<h1>{{folderById.name}}</h1>
+	<div class="container">
+		{{#if folderImg.length}}
+		<ul class="folder-list">
+			{{#each folderImg}}
+			<li>
+				<div class="folder-card" draggable="true" data-imgname="{{this.img_name}}" data-custom-value={{this._id}}>
+					<p>{{changeUnixTime this.createdAt}} </p>
+					<img src="/uploads/folder/{{this.img_name}}" id={{this._id}} width="200px" height="200px" />
+					<h5>{{this.img_name}}</h5>
+					<div class="checkBoxCover">
+						<p>Set Cover Image </p>
+						<input type="checkbox" class="coverPhoto" value="{{this.img_name}}" {{#if
+							../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
+							this.img_name)}}checked{{/if}}{{/if}} />
+					</div>
+					<div class="deleteAndMoveButton">
+						<button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
+							this.img_name)}}disabled{{/if}}{{/if}} class="deleteButton" data-img-id="{{this._id}}"
+							data-img-name="{{this.img_name}}">Delete</button>
+						<button {{#if ../folderById.cover_img}}{{#if (isCoverChecked ../folderById.cover_img
+							this.img_name)}}disabled{{/if}}{{/if}} class="openPopup" data-img-id="{{this._id}}">Move
+							Image -></button>
+						<button class="cropButton">Crop</button>
+					</div>
+				</div>
+			</li>
+			{{/each}}
+		</ul>
 
-      <!-- Modal for image cropping -->
-      <div id="cropModal" class="modal">
-         <div class="modal-content">
-            <span class="close">&times;</span>
-            <div class="cropper-container">
-               <img id="cropperImage" src="#" alt="Preview">
-            </div>
-            <button id="cropImageBtn">Crop Image</button>
-         </div>
-      </div>
+		<!-- Modal for image cropping -->
+		<div id="cropModal" class="modal">
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<div class="cropper-container">
+					<img id="cropperImage" src="#" alt="Preview">
+				</div>
+				<button id="cropImageBtn">Crop Image</button>
+			</div>
+		</div>
 
 
-      <!-- The pop-up -->
-      <div class="popup" id="popup">
-         <div class="popup-content">
-            <span class="close" id="closePopup">&times;</span>
-            <h2 style="text-align: center;">Select Folder</h2>
-            <ul id="listContainer">
-               {{#each newFolders}}
-               <div class="checkBoxSelectFoder">
-                  <input type="checkbox" id="imageID" class="selectFolder" value="{{this._id}}" />
-                  <p style="padding: 5px;">{{this.name}}</p>
-               </div>
-               {{/each}}
-            </ul>
-         </div>
-      </div>
+		<!-- The pop-up -->
+		<div class="popup" id="popup">
+			<div class="popup-content">
+				<span class="close" id="closePopup">&times;</span>
+				<h2 style="text-align: center;">Select Folder</h2>
+				<ul id="listContainer">
+					{{#each newFolders}}
+					<div class="checkBoxSelectFoder">
+						<input type="checkbox" id="imageID" class="selectFolder" value="{{this._id}}" />
+						<p style="padding: 5px;">{{this.name}}</p>
+					</div>
+					{{/each}}
+				</ul>
+			</div>
+		</div>
 
-      <!-- Modal for confirmation -->
-      <div id="deleteConfirmationModal" class="modal">
-         <div class="modal-content">
-            <p>Are you sure you want to delete this image?</p>
-            <button id="confirmDelete">OK</button>
-            <button id="cancelDelete">Cancel</button>
-         </div>
-      </div>
+		<!-- Modal for confirmation -->
+		<div id="deleteConfirmationModal" class="modal">
+			<div class="modal-content">
+				<p>Are you sure you want to delete this image?</p>
+				<button id="confirmDelete">OK</button>
+				<button id="cancelDelete">Cancel</button>
+			</div>
+		</div>
 
-      {{else}}
-      <div class="no-images-found">
-         <p>No images found.</p>
-      </div>
-      {{/if}}
+		{{else}}
+		<div class="no-images-found">
+			<p>No images found.</p>
+		</div>
+		{{/if}}
 
-      <form class="fixed-form">
-         <input type="file" id="inputImage">
-         <p id="fileErr" class="err text-danger"></p>
-         <input type="hidden" id="folder" value="{{folderById.id}}">
-         <button type="submit">Save</button>
-      </form>
-   </div>
+		<form class="fixed-form">
+			<input type="file" id="inputImage">
+			<p id="fileErr" class="err text-danger"></p>
+			<input type="hidden" id="folder" value="{{folderById.id}}">
+			<button type="submit">Save</button>
+		</form>
+	</div>
 </body>
 
 <script>
-   var folderId = $("#folder").val();
-   // Dras and drop Images --------------------------------
-   document.addEventListener('DOMContentLoaded', function () {
-      const imageList = document.getElementById('imageList');
+	var folderId = $("#folder").val();
+	// Dras and drop Images --------------------------------
+	document.addEventListener('DOMContentLoaded', function () {
+		const imageList = document.getElementById('imageList');
 
-      let dragItem = null;
+		let dragItem = null;
 
-      function handleDragStart(e) {
-         dragItem = this;
-         e.dataTransfer.effectAllowed = 'move';
-         e.dataTransfer.setData('text/html', this.innerHTML);
-      }
+		function handleDragStart(e) {
+			dragItem = this;
+			e.dataTransfer.effectAllowed = 'move';
+			e.dataTransfer.setData('text/html', this.innerHTML);
+		}
 
-      function handleDragOver(e) {
-         if (e.preventDefault) {
-            e.preventDefault();
-         }
-         e.dataTransfer.dropEffect = 'move';
-         return false;
-      }
+		function handleDragOver(e) {
+			if (e.preventDefault) {
+				e.preventDefault();
+			}
+			e.dataTransfer.dropEffect = 'move';
+			return false;
+		}
 
-      function handleDragEnter(e) {
-         this.classList.add('over');
-      }
+		function handleDragEnter(e) {
+			this.classList.add('over');
+		}
 
-      function handleDragLeave() {
-         this.classList.remove('over');
-      }
+		function handleDragLeave() {
+			this.classList.remove('over');
+		}
 
-      function handleDrop(e) {
-         if (e.stopPropagation) {
-            e.stopPropagation();
-         }
-         if (dragItem !== this) {
-            this.parentNode.insertBefore(dragItem, this.nextSibling);
-            // Update order in MongoDB after drop
-            updateOrderInMongoDB();
-         }
-         return false;
-      }
+		function handleDrop(e) {
+			if (e.stopPropagation) {
+				e.stopPropagation();
+			}
+			if (dragItem !== this) {
+				this.parentNode.insertBefore(dragItem, this.nextSibling);
+				// Update order in MongoDB after drop
+				updateOrderInMongoDB();
+			}
+			return false;
+		}
 
-      function handleDragEnd() {
-         this.classList.remove('over');
-      }
+		function handleDragEnd() {
+			this.classList.remove('over');
+		}
 
-      function updateOrderInMongoDB() {
-         const cards = document.querySelectorAll('.folder-card');
+		function updateOrderInMongoDB() {
+			const cards = document.querySelectorAll('.folder-card');
 
-         let newImgArray = []
-         cards.forEach(card => {
-            const imgElement = card.querySelector('img')
-            const _id = imgElement.getAttribute('id')
-            const img_name = getImageNameFromSrc(imgElement.src)
-            newImgArray.push({ _id, img_name })
-         });
-         function getImageNameFromSrc(src) {
-            const parts = src.split('/');
-            const imageName = parts[parts.length - 1];
-            return imageName;
-         }
-         console.log(newImgArray);
+			let newImgArray = []
+			cards.forEach(card => {
+				const imgElement = card.querySelector('img')
+				const _id = imgElement.getAttribute('id')
+				const img_name = getImageNameFromSrc(imgElement.src)
+				newImgArray.push({ _id, img_name })
+			});
+			function getImageNameFromSrc(src) {
+				const parts = src.split('/');
+				const imageName = parts[parts.length - 1];
+				return imageName;
+			}
+			console.log(newImgArray);
 
-         $.ajax({
-            type: "PUT",
-            url: "/folder/update/" + folderId,
-            data: { imageOrder: JSON.stringify(newImgArray) },
-            encode: true,
-            success: function (data) {
-               console.log("Cover image updated successfully.");
-               window.location.href = `/folder/${folderId}`;
-            },
-            error: function (xhr, status, error) {
-               console.error("Error:", error, xhr.responseText);
-            }
-         });
+			$.ajax({
+				type: "PUT",
+				url: "/folder/update/" + folderId,
+				data: { imageOrder: JSON.stringify(newImgArray) },
+				encode: true,
+				success: function (data) {
+					console.log("Cover image updated successfully.");
+					window.location.href = `/folder/${folderId}`;
+				},
+				error: function (xhr, status, error) {
+					console.error("Error:", error, xhr.responseText);
+				}
+			});
 
-      }
+		}
 
-      const cards = document.querySelectorAll('.folder-card');
-      cards.forEach(function (card) {
-         card.addEventListener('dragstart', handleDragStart, false);
-         card.addEventListener('dragenter', handleDragEnter, false);
-         card.addEventListener('dragover', handleDragOver, false);
-         card.addEventListener('dragleave', handleDragLeave, false);
-         card.addEventListener('drop', handleDrop, false);
-         card.addEventListener('dragend', handleDragEnd, false);
-      });
-   });
+		const cards = document.querySelectorAll('.folder-card');
+		cards.forEach(function (card) {
+			card.addEventListener('dragstart', handleDragStart, false);
+			card.addEventListener('dragenter', handleDragEnter, false);
+			card.addEventListener('dragover', handleDragOver, false);
+			card.addEventListener('dragleave', handleDragLeave, false);
+			card.addEventListener('drop', handleDrop, false);
+			card.addEventListener('dragend', handleDragEnd, false);
+		});
+	});
 
-   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   $(document).ready(function () {
-      // Image Preview
-      var cropper;
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	$(document).ready(function () {
+		// Image Preview
+		var cropper;
 
-      // Attach a click event listener to the "Crop" buttons
-      $('.cropButton').on('click', function () {
-         var imgId = $(this).closest('.folder-card').data('custom-value');
-         var imgSrc = $(this).closest('.folder-card').find('img').attr('src');
+		// Attach a click event listener to the "Crop" buttons
+		$('.cropButton').on('click', function () {
+			var imgId = $(this).closest('.folder-card').data('custom-value');
+			var imgSrc = $(this).closest('.folder-card').find('img').attr('src');
 
-         // Set image source in the modal
-         $('#cropperImage').attr('src', imgSrc);
+			// Set image source in the modal
+			$('#cropperImage').attr('src', imgSrc);
 
-         // Show the crop modal
-         $('#cropModal').css('display', 'block');
+			// Show the crop modal
+			$('#cropModal').css('display', 'block');
 
-         // Initialize Cropper.js after the image is loaded
-         $('#cropperImage').on('load', function () {
-            cropper = new Cropper(this, {
-               aspectRatio: 16 / 9, // Example aspect ratio (adjust as needed)
-               viewMode: 1,
-               crop: function (event) {
-                  // Handle the cropping process if needed
-               }
-            });
-         });
-      });
+			// Initialize Cropper.js after the image is loaded
+			$('#cropperImage').on('load', function () {
+				cropper = new Cropper(this, {
+					aspectRatio: 16 / 9, // Example aspect ratio (adjust as needed)
+					viewMode: 1,
+					crop: function (event) {
+						// Handle the cropping process if needed
+					}
+				});
+			});
 
-      // Close the modal when the close button is clicked
-      $('#cropModal .close').on('click', function () {
-         $('#cropModal').css('display', 'none');
-         cropper.destroy(); // Destroy the cropper instance
-      });
-      // Crop the image when the "Crop Image" button is clicked
-      $('#cropImageBtn').on('click', function () {
-         var croppedCanvas = cropper.getCroppedCanvas();
-         var imageData = croppedCanvas.toDataURL(); // Get the base64 data URL
-         function base64ToBlob(base64String, mimeType) {
-            mimeType = mimeType || '';
-            var byteString = atob(base64String);
-            var arrayBuffer = new ArrayBuffer(byteString.length);
-            var intArray = new Uint8Array(arrayBuffer);
-            for (var i = 0; i < byteString.length; i++) {
-               intArray[i] = byteString.charCodeAt(i);
-            }
-            return new Blob([arrayBuffer], { type: mimeType });
-         }
+			// Crop the image when the "Crop Image" button is clicked
+			$('#cropImageBtn').on('click', function () {
+				var croppedCanvas = cropper.getCroppedCanvas();
+				var imageData = croppedCanvas.toDataURL(); // Get the base64 data URL
+				function base64ToBlob(base64String, mimeType) {
+					mimeType = mimeType || '';
+					var byteString = atob(base64String);
+					var arrayBuffer = new ArrayBuffer(byteString.length);
+					var intArray = new Uint8Array(arrayBuffer);
+					for (var i = 0; i < byteString.length; i++) {
+						intArray[i] = byteString.charCodeAt(i);
+					}
+					return new Blob([arrayBuffer], { type: mimeType });
+				}
 
-         var blobImage = base64ToBlob(imageData.split(',')[1], 'image/png');
-         // Send the cropped image data to the server using AJAX
-         const formData = new FormData();
-         formData.append('image',blobImage);
-         formData.append('folderId', folderId)
-
-         fetch("/folder", {
-            method: "post",
-            body: formData,
-         })
-            .then(response => {
-               if (!response.ok) {
-                  throw new Error('Network response was not ok');
-               }
-               console.log("Form data submitted successfully.");
-               window.location.href = `/folder/${folderId}`;
-            })
-            .catch(error => {
-               console.error("Error:", error);
-               alert("Something went wrong!");
-            });
-
-                // Close the modal
-         $('#cropModal').css('display', 'none');
-         cropper.destroy(); // Destroy the cropper instance
+				var blobImage = base64ToBlob(imageData.split(',')[1], 'image/png');
+				// Send the cropped image data to the server using AJAX
+				const formData = new FormData();
+				formData.append('image', blobImage);
+				fetch(`/folder/${imgId}`, {
+					method: "put",
+					body: formData,
+				})
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						console.log("Form data submitted successfully.");
+						window.location.href = `/folder/${folderId}`;
+					})
+					.catch(error => {
+						console.error("Error:", error);
+						alert("Something went wrong!");
+					});
+				// Close the modal
+				$('#cropModal').css('display', 'none');
+				cropper.destroy(); // Destroy the cropper instance
 
 
-      });
+			});
 
+		});
+
+		// Close the modal when the close button is clicked
+		$('#cropModal .close').on('click', function () {
+			$('#cropModal').css('display', 'none');
+			cropper.destroy(); // Destroy the cropper instance
+		});
 
 
 
 
-      //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      var folderId = $("#folder").val();
-      // function for Set cover image
-      const checkboxes = document.querySelectorAll('.folder-card input');
-      checkboxes.forEach(checkbox => {
-         checkbox.addEventListener('change', function () {
-            if (this.checked) {
-               checkboxes.forEach(cb => {
-                  if (cb !== this) {
-                     cb.checked = false;
-                  }
-               });
-            }
-            checkboxes.forEach(img => img.classList.remove('selected'));
-            this.classList.add('selected');
-            setCoverImage(this.value);
-         });
-      });
+		//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		var folderId = $("#folder").val();
+		// function for Set cover image
+		const checkboxes = document.querySelectorAll('.folder-card input');
+		checkboxes.forEach(checkbox => {
+			checkbox.addEventListener('change', function () {
+				if (this.checked) {
+					checkboxes.forEach(cb => {
+						if (cb !== this) {
+							cb.checked = false;
+						}
+					});
+				}
+				checkboxes.forEach(img => img.classList.remove('selected'));
+				this.classList.add('selected');
+				setCoverImage(this.value);
+			});
+		});
 
-      // Set cover image for folder
-      function setCoverImage(ImageName) {
-         const resDat = $.ajax({
-            type: "PUT",
-            url: "/folder/update/" + folderId,
-            data: { cover_img: ImageName },
-            encode: true,
-            success: setTimeout(function (data) {
-               console.log("Cover image updated successfully.");
-               window.location.href = `/folder`;
-            }, 500),
-            error: function (xhr, status, error) {
-               console.error("Error:", error, xhr.responseText);
-            }
-         })
+		// Set cover image for folder
+		function setCoverImage(ImageName) {
+			const resDat = $.ajax({
+				type: "PUT",
+				url: "/folder/update/" + folderId,
+				data: { cover_img: ImageName },
+				encode: true,
+				success: setTimeout(function (data) {
+					console.log("Cover image updated successfully.");
+					window.location.href = `/folder`;
+				}, 500),
+				error: function (xhr, status, error) {
+					console.error("Error:", error, xhr.responseText);
+				}
+			})
 
-      }
+		}
 
-      // Form submission
-      $("form").submit(function (event) {
-         event.preventDefault();
-         var err = false;
-         $('.err').html('');
+		// Form submission
+		$("form").submit(function (event) {
+			event.preventDefault();
+			var err = false;
+			$('.err').html('');
 
-         const formData = new FormData();
-         var folderId = $("#folder").val()
-         var files = $('#inputImage')[0].files[0];
-         formData.append('img_name', files.name); //names save to be on database
-         formData.append('image', files); //save on folder
-         formData.append('folderId', folderId) // save folderId
+			const formData = new FormData();
+			var folderId = $("#folder").val()
+			var files = $('#inputImage')[0].files[0];
+			formData.append('img_name', files.name); //names save to be on database
+			formData.append('image', files); //save on folder
+			formData.append('folderId', folderId) // save folderId
 
-         var extArr = files.name.split('.');
-         var lastIndex = extArr.length - 1;
-         var extensions = ['svg', 'jpg', 'jpeg', 'png', 'gif', 'tiff', 'SVG', 'JPG', 'JPEG', 'PNG', 'GIF', 'TIFF'];
-         var ext = extArr[lastIndex];
+			var extArr = files.name.split('.');
+			var lastIndex = extArr.length - 1;
+			var extensions = ['svg', 'jpg', 'jpeg', 'png', 'gif', 'tiff', 'SVG', 'JPG', 'JPEG', 'PNG', 'GIF', 'TIFF'];
+			var ext = extArr[lastIndex];
 
-         if (!extensions.includes(ext)) {
-            $('#fileErr').html('Invalid file');
-            err = true;
-         }
+			if (!extensions.includes(ext)) {
+				$('#fileErr').html('Invalid file');
+				err = true;
+			}
 
-         for (var pair of formData.entries()) {
-            console.log(pair);
-         }
+			for (var pair of formData.entries()) {
+				console.log(pair);
+			}
 
-         if (!err) {
-            fetch("/folder", {
-               method: "post",
-               body: formData,
-            })
-               .then(response => {
-                  if (!response.ok) {
-                     throw new Error('Network response was not ok');
-                  }
-                  console.log("Form data submitted successfully.");
-                  window.location.href = `/folder/${folderId}`;
-               })
-               .catch(error => {
-                  console.error("Error:", error);
-                  alert("Something went wrong!");
-               });
-         }
-      });
-   });
+			if (!err) {
+				fetch("/folder", {
+					method: "post",
+					body: formData,
+				})
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						console.log("Form data submitted successfully.");
+						window.location.href = `/folder/${folderId}`;
+					})
+					.catch(error => {
+						console.error("Error:", error);
+						alert("Something went wrong!");
+					});
+			}
+		});
+	});
 
 
-   //todo: Move image to other folder ---------------------------
-   var popupButtons = document.querySelectorAll(".openPopup");
-   popupButtons.forEach(function (button) {
-      button.addEventListener("click", function () {
-         var imgId = button.getAttribute("data-img-id");
-         openPopup(imgId);
-      });
-   });
+	//todo: Move image to other folder ---------------------------
+	var popupButtons = document.querySelectorAll(".openPopup");
+	popupButtons.forEach(function (button) {
+		button.addEventListener("click", function () {
+			var imgId = button.getAttribute("data-img-id");
+			openPopup(imgId);
+		});
+	});
 
-   function openPopup(imgId) {
-      document.getElementById("popup").style.display = "block";
-      // function for change folder id in image
-      const checkboxes = document.querySelectorAll('.checkBoxSelectFoder input');
-      checkboxes.forEach(checkbox => {
-         checkbox.addEventListener('change', function () {
-            moveImage(this.value);
-         });
-      });
+	function openPopup(imgId) {
+		document.getElementById("popup").style.display = "block";
+		// function for change folder id in image
+		const checkboxes = document.querySelectorAll('.checkBoxSelectFoder input');
+		checkboxes.forEach(checkbox => {
+			checkbox.addEventListener('change', function () {
+				moveImage(this.value);
+			});
+		});
 
-      function moveImage(ImageName) {
-         var folderId = $("#folder").val();
-         const resDat = $.ajax({
-            type: "PUT",
-            url: "/folder/" + imgId,
-            data: { folderId: ImageName },
-            encode: true,
-            success: setTimeout(function (data) {
-               console.log("Cover image updated successfully.");
-               window.location.href = `/folder/${folderId}`;
-            }, 500),
-            error: function (xhr, status, error) {
-               console.error("Error:", error, xhr.responseText);
-            }
-         })
-      }
-   }
-   document.getElementById("closePopup").addEventListener("click", function () {
-      document.getElementById("popup").style.display = "none";
-   });
+		function moveImage(ImageName) {
+			var folderId = $("#folder").val();
+			$.ajax({
+				type: "PUT",
+				url: "/folder/image/" + imgId,
+				data: { folderId: ImageName },
+				encode: true,
+				success: setTimeout(function (data) {
+					console.log("Cover image updated successfully.");
+					window.location.href = `/folder/${folderId}`;
+				}, 500),
+				error: function (xhr, status, error) {
+					console.error("Error:", error, xhr.responseText);
+				}
+			})
+		}
+	}
+	document.getElementById("closePopup").addEventListener("click", function () {
+		document.getElementById("popup").style.display = "none";
+	});
 
-   //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   // Delete Image functionality
-   var modal = document.getElementById("deleteConfirmationModal");
-   var deleteButtons = document.querySelectorAll(".deleteButton");
-   var confirmDeleteButton = document.getElementById("confirmDelete");
-   var cancelDeleteButton = document.getElementById("cancelDelete");
-   deleteButtons.forEach(function (button) {
-      button.addEventListener("click", function () {
-         var imgId = button.getAttribute("data-img-id");
-         var imgName = button.getAttribute("data-img-name");
-         openDeleteConfirmationModal(imgId, imgName);
-      });
-   });
+	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	// Delete Image functionality
+	var modal = document.getElementById("deleteConfirmationModal");
+	var deleteButtons = document.querySelectorAll(".deleteButton");
+	var confirmDeleteButton = document.getElementById("confirmDelete");
+	var cancelDeleteButton = document.getElementById("cancelDelete");
+	deleteButtons.forEach(function (button) {
+		button.addEventListener("click", function () {
+			var imgId = button.getAttribute("data-img-id");
+			var imgName = button.getAttribute("data-img-name");
+			openDeleteConfirmationModal(imgId, imgName);
+		});
+	});
 
-   // Function to open the delete confirmation modal
-   function openDeleteConfirmationModal(imgId, imgName) {
-      modal.style.display = "block";
-      modal.setAttribute("data-img-id", imgId);
-      modal.setAttribute("data-img-name", imgName);
-   }
-   confirmDeleteButton.addEventListener("click", function () {
-      var imgId = modal.getAttribute("data-img-id");
-      var imgName = modal.getAttribute("data-img-name");
-      deleteImage(imgId, imgName)
-      modal.style.display = "none";
-   });
+	// Function to open the delete confirmation modal
+	function openDeleteConfirmationModal(imgId, imgName) {
+		modal.style.display = "block";
+		modal.setAttribute("data-img-id", imgId);
+		modal.setAttribute("data-img-name", imgName);
+	}
+	confirmDeleteButton.addEventListener("click", function () {
+		var imgId = modal.getAttribute("data-img-id");
+		var imgName = modal.getAttribute("data-img-name");
+		deleteImage(imgId, imgName)
+		modal.style.display = "none";
+	});
 
-   function deleteImage(imgId, imgName) {
-      console.log(imgId, 'iii')
-      $.ajax({
-         type: "DELETE",
-         url: "/folder/image/" + imgId,
-         data: { imgName: imgName },
-         encode: true,
-         success: setTimeout(function (data) {
-            console.log("image Deleted successfully.");
-            window.location.href = `/folder/${folderId}`;
-         }, 500),
-         error: function (xhr, status, error) {
-            console.error("Error:", error, xhr.responseText);
-         }
-      })
+	function deleteImage(imgId, imgName) {
+		console.log(imgId, 'iii')
+		$.ajax({
+			type: "DELETE",
+			url: "/folder/image/" + imgId,
+			data: { imgName: imgName },
+			encode: true,
+			success: setTimeout(function (data) {
+				console.log("image Deleted successfully.");
+				window.location.href = `/folder/${folderId}`;
+			}, 500),
+			error: function (xhr, status, error) {
+				console.error("Error:", error, xhr.responseText);
+			}
+		})
 
-   }
+	}
 
-   cancelDeleteButton.addEventListener("click", function () {
-      modal.style.display = "none";
-   });
+	cancelDeleteButton.addEventListener("click", function () {
+		modal.style.display = "none";
+	});
 
 
 </script>
