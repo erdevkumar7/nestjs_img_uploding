@@ -110,7 +110,7 @@ export class FolderControler {
   ) {
     const filenameSaveToDB = uploadImg.filename
     console.log(filenameSaveToDB)
-    const folderUpdate = await this.folderService.updateImage(imgId, {img_name: filenameSaveToDB});
+    const folderUpdate = await this.folderService.updateImage(imgId, {cropped_name: filenameSaveToDB, is_cropped: true});
     response.json(folderUpdate);
     return {
       folderUpdate,

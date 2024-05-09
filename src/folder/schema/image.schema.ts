@@ -10,6 +10,12 @@ export class Img {
   img_name: string;
 
   @Prop()
+  cropped_name:string;
+
+  @Prop({ default: false })
+  is_cropped: boolean;
+
+  @Prop()
   folderId: string;
 
   @Prop({ default: false })

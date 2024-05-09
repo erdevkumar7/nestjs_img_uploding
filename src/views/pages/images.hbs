@@ -181,9 +181,14 @@
 		<ul class="folder-list">
 			{{#each folderImg}}
 			<li>
-				<div class="folder-card" draggable="true" data-imgname="{{this.img_name}}" data-custom-value={{this._id}}>
+				<div class="folder-card" draggable="true" data-imgname="{{this.img_name}}"
+					data-custom-value={{this._id}}>
 					<p>{{changeUnixTime this.createdAt}} </p>
-					<img src="/uploads/folder/{{this.img_name}}" id={{this._id}} width="200px" height="200px" />
+					{{#if this.is_cropped}}
+					<img src="/uploads/folder/{{this.cropped_name}}" id="{{this._id}}" width="200px" height="200px" />
+					{{else}}
+					<img src="/uploads/folder/{{this.img_name}}" id="{{this._id}}" width="200px" height="200px" />
+					{{/if}}
 					<h5>{{this.img_name}}</h5>
 					<div class="checkBoxCover">
 						<p>Set Cover Image </p>
@@ -199,6 +204,7 @@
 							this.img_name)}}disabled{{/if}}{{/if}} class="openPopup" data-img-id="{{this._id}}">Move
 							Image -></button>
 						<button class="cropButton">Crop</button>
+						<button class="restoreButton">Restore</button>
 					</div>
 				</div>
 			</li>
@@ -349,9 +355,30 @@
 
 	//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	$(document).ready(function () {
-		// Image Preview
-		var cropper;
+		// todo: Restore image
+		$('.restoreButton').on('click', function(){
+			var imgId = $(this).closest('.folder-card').data('custom-value');
+			var imgSrc = $(this).closest('.folder-card').find('img').attr('src');
+			console.log(imgId,'rrrrrr',imgSrc)
 
+				$.ajax({
+				type: "PUT",
+				url: "/folder/image/" + imgId,
+				data: { is_cropped: false },
+				encode: true,
+				success: setTimeout(function (data) {
+					console.log("Cover image updated successfully.");
+					window.location.href = `/folder/${folderId}`;
+				}, 500),
+				error: function (xhr, status, error) {
+					console.error("Error:", error, xhr.responseText);
+				}
+			})
+		})
+
+
+		// Image Preview and crop image
+		var cropper;
 		// Attach a click event listener to the "Crop" buttons
 		$('.cropButton').on('click', function () {
 			var imgId = $(this).closest('.folder-card').data('custom-value');
